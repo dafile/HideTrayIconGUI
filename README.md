@@ -1,4 +1,5 @@
 # HideTrayIcon GUI / 系统托盘图标隐藏管理工具
+<img width="814" height="588" alt="image" src="https://github.com/user-attachments/assets/7667d53a-5d09-48c4-81a8-c8cb40c8f17a" />
 
 [中文](#中文说明) | [English](#english)
 
