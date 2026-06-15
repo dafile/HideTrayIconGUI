@@ -4,6 +4,8 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Forms = System.Windows.Forms;
+using Drawing = System.Drawing;
 
 namespace HideTrayIconGUI;
 
@@ -11,12 +13,15 @@ public partial class MainWindow : Window
 {
     private readonly string _rulesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "rules.txt");
     private readonly string _filterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "filter.txt");
+    private readonly string _configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.txt");
     private readonly DispatcherTimer _autoTimer;
     private readonly DispatcherTimer _countTimer;
-    private readonly ObservableCollection<IconItem> _allIcons = new();  // unfiltered
-    private readonly ObservableCollection<IconItem> _viewIcons = new(); // displayed
+    private readonly ObservableCollection<IconItem> _allIcons = new();
+    private readonly ObservableCollection<IconItem> _viewIcons = new();
     private string _currentFilter = "全部";
     private List<string> _filteredProcesses = [];
+    private bool _minimizeToTray = true; // default: minimize to tray on close
+    private Forms.NotifyIcon? _trayIcon;
 
     public MainWindow()
     {
@@ -27,37 +32,100 @@ public partial class MainWindow : Window
 
         _countTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         _countTimer.Tick += (s, e) => { try { UpdateCount(); } catch { } };
+
+        InitTrayIcon();
     }
+
+    // ========== Tray Icon ==========
+
+    private void InitTrayIcon()
+    {
+        _trayIcon = new Forms.NotifyIcon();
+        _trayIcon.Icon = CreateAppIcon();
+        _trayIcon.Text = "HideTrayIcon GUI";
+        _trayIcon.Visible = false;
+
+        var menu = new Forms.ContextMenuStrip();
+        menu.Items.Add("显示主窗口", null, (s, e) => ShowFromTray());
+        menu.Items.Add(new Forms.ToolStripSeparator());
+        menu.Items.Add("立即应用规则", null, (s, e) => { ApplyRules(); SafeDelay(2000, RefreshList); });
+        menu.Items.Add(new Forms.ToolStripSeparator());
+        menu.Items.Add("退出", null, (s, e) => ExitApp());
+        _trayIcon.ContextMenuStrip = menu;
+        _trayIcon.DoubleClick += (s, e) => ShowFromTray();
+    }
+
+    private static Drawing.Icon CreateAppIcon()
+    {
+        using var bmp = new Drawing.Bitmap(16, 16);
+        using var g = Drawing.Graphics.FromImage(bmp);
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        g.Clear(Drawing.Color.Transparent);
+        // Blue circle with "H"
+        using var bg = new Drawing.SolidBrush(Drawing.Color.FromArgb(0x19, 0x76, 0xD2));
+        g.FillEllipse(bg, 0, 0, 15, 15);
+        using var pen = new Drawing.Pen(Drawing.Color.White, 2);
+        // Draw "H" shape
+        g.DrawLine(pen, 4, 4, 4, 12);  // left stroke
+        g.DrawLine(pen, 11, 4, 11, 12); // right stroke
+        g.DrawLine(pen, 4, 8, 11, 8);   // crossbar
+        return Drawing.Icon.FromHandle(bmp.GetHicon());
+    }
+
+    private void ShowFromTray()
+    {
+        Show();
+        WindowState = WindowState.Normal;
+        Activate();
+        if (_trayIcon != null) _trayIcon.Visible = false;
+    }
+
+    private void MinimizeToTray()
+    {
+        Hide();
+        if (_trayIcon != null) _trayIcon.Visible = true;
+    }
+
+    private void ExitApp()
+    {
+        _trayIcon?.Dispose();
+        _autoTimer.Stop();
+        _countTimer.Stop();
+        System.Windows.Application.Current.Shutdown();
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        if (WindowState == WindowState.Minimized && _minimizeToTray)
+        {
+            MinimizeToTray();
+        }
+    }
+
+    // ========== Load ==========
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         try
         {
-            Log("[1] 绑定数据源...");
             IconGrid.ItemsSource = _viewIcons;
             _countTimer.Start();
 
-            Log("[2] 加载过滤配置...");
+            LoadConfig();
             LoadFilter();
-
-            Log("[3] 加载规则...");
             LoadRules();
-
-            Log("[4] 刷新图标列表...");
             RefreshList();
 
             string exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "hideTrayIcon.exe");
-            Log($"[5] hideTrayIcon.exe: {(File.Exists(exePath) ? "已找到" : "未找到!")}");
-            Log($"[6] 过滤进程: {(_filteredProcesses == null ? "null" : string.Join(", ", _filteredProcesses))}");
+            Log($"程序启动 | hideTrayIcon.exe: {(File.Exists(exePath) ? "已找到" : "未找到")}");
+            if (_filteredProcesses.Count > 0)
+                Log($"过滤: {string.Join(", ", _filteredProcesses)}");
 
-            // Auto-apply on startup
-            string rules = RulesBox?.Text?.Trim() ?? "";
-            if (!string.IsNullOrEmpty(rules))
+            if (!string.IsNullOrEmpty(RulesBox?.Text?.Trim() ?? ""))
             {
-                Log("[7] 启动时自动应用规则...");
+                Log("启动时自动应用规则...");
                 ApplyRules();
             }
-            Log("[8] 启动完成");
         }
         catch (Exception ex)
         {
@@ -65,6 +133,40 @@ public partial class MainWindow : Window
             HideService.Log("CRASH", msg);
             System.Windows.MessageBox.Show(msg, "错误", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
         }
+    }
+
+    // ========== Config ==========
+
+    private void LoadConfig()
+    {
+        try
+        {
+            if (File.Exists(_configPath))
+            {
+                foreach (var line in File.ReadAllLines(_configPath))
+                {
+                    if (line.StartsWith("MinimizeToTray="))
+                        _minimizeToTray = line.Split('=')[1].Trim() == "true";
+                }
+            }
+            else
+            {
+                SaveConfig();
+            }
+        }
+        catch { }
+    }
+
+    private void SaveConfig()
+    {
+        try { File.WriteAllText(_configPath, $"MinimizeToTray={_minimizeToTray.ToString().ToLower()}\n"); }
+        catch { }
+    }
+
+    public bool MinimizeToTraySetting
+    {
+        get => _minimizeToTray;
+        set { _minimizeToTray = value; SaveConfig(); }
     }
 
     // ========== Icon list ==========
@@ -77,7 +179,6 @@ public partial class MainWindow : Window
             var icons = HideService.EnumerateTrayIcons();
             if (icons == null) { Log("EnumerateTrayIcons 返回 null"); return; }
 
-            // Add all visible icons
             foreach (var icon in icons)
             {
                 if (icon == null) continue;
@@ -95,18 +196,27 @@ public partial class MainWindow : Window
                 });
             }
 
-            // Merge rules (hidden items that may have been hard-deleted by hideTrayIcon.exe)
+            // Merge rules (hidden items that may have been hard-deleted)
             var rules = GetCurrentRules();
             var existingNames = _allIcons.Select(i => i.ProcessName).ToHashSet(StringComparer.OrdinalIgnoreCase);
             foreach (var rule in rules)
             {
-                if (!existingNames.Contains(rule))
+                string procName = rule;
+                string tooltip = "";
+                int sep = rule.IndexOf('|');
+                if (sep > 0)
+                {
+                    procName = rule[..sep];
+                    tooltip = rule[(sep + 1)..];
+                }
+
+                if (!existingNames.Contains(procName))
                 {
                     _allIcons.Add(new IconItem
                     {
                         IsSelected = false,
-                        ProcessName = rule,
-                        Tooltip = "",
+                        ProcessName = procName,
+                        Tooltip = tooltip,
                         Area = "规则",
                         Status = "已隐藏"
                     });
@@ -114,11 +224,11 @@ public partial class MainWindow : Window
             }
 
             ApplyViewFilter();
-            Log($"刷新列表: {_allIcons.Count} 个 (含规则中隐藏项)");
+            Log($"刷新: {_allIcons.Count} 个图标");
         }
         catch (Exception ex)
         {
-            Log($"刷新列表异常: {ex.GetType().Name}: {ex.Message}");
+            Log($"刷新异常: {ex.GetType().Name}: {ex.Message}");
         }
     }
 
@@ -146,19 +256,14 @@ public partial class MainWindow : Window
                 "已隐藏" => _allIcons.Where(i => i.Status == "已隐藏"),
                 _ => _allIcons.AsEnumerable()
             };
-            foreach (var item in filtered)
-                _viewIcons.Add(item);
+            foreach (var item in filtered) _viewIcons.Add(item);
             UpdateCount();
         }
-        catch (Exception ex)
-        {
-            Log($"ApplyViewFilter 异常: {ex.Message}");
-        }
+        catch (Exception ex) { Log($"ApplyViewFilter: {ex.Message}"); }
     }
 
     private void Filter_Changed(object sender, SelectionChangedEventArgs e)
     {
-        // Guard: may fire during InitializeComponent before _viewIcons is ready
         if (_viewIcons == null || _allIcons == null) return;
         if (FilterCombo?.SelectedItem is ComboBoxItem item)
         {
@@ -169,7 +274,7 @@ public partial class MainWindow : Window
 
     private void UpdateCount()
     {
-        if (StatusText == null) return; // Guard: may be called during InitializeComponent
+        if (StatusText == null) return;
         int total = _allIcons.Count;
         int visible = _allIcons.Count(i => i.Status == "可见");
         int hidden = _allIcons.Count(i => i.Status == "已隐藏");
@@ -180,63 +285,106 @@ public partial class MainWindow : Window
     }
 
     private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshList();
+    private void SelectAll_Click(object sender, RoutedEventArgs e) { foreach (var i in _viewIcons) i.IsSelected = true; UpdateCount(); }
+    private void DeselectAll_Click(object sender, RoutedEventArgs e) { foreach (var i in _allIcons) i.IsSelected = false; UpdateCount(); }
 
-    private void SelectAll_Click(object sender, RoutedEventArgs e)
+    // ========== Right-click context menu ==========
+
+    private void IconGrid_RightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-        foreach (var item in _viewIcons) item.IsSelected = true;
-        UpdateCount();
+        // Find the row under the cursor
+        var depObj = e.OriginalSource as DependencyObject;
+        while (depObj != null && depObj is not DataGridRow)
+            depObj = System.Windows.Media.VisualTreeHelper.GetParent(depObj);
+
+        if (depObj is DataGridRow row && row.DataContext is IconItem item)
+        {
+            IconGrid.SelectedItem = item;
+            var menu = (ContextMenu)FindResource("IconContextMenu");
+            menu.DataContext = item;
+            menu.IsOpen = true;
+            e.Handled = true;
+        }
     }
 
-    private void DeselectAll_Click(object sender, RoutedEventArgs e)
+    private void CtxHide_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var item in _allIcons) item.IsSelected = false;
-        UpdateCount();
+        if (IconGrid.SelectedItem is not IconItem item) return;
+        HideSingle(item);
     }
 
-    // ========== Hide / Show ==========
+    private void CtxShow_Click(object sender, RoutedEventArgs e)
+    {
+        if (IconGrid.SelectedItem is not IconItem item) return;
+        ShowSingle(item);
+    }
+
+    private void CtxCopyName_Click(object sender, RoutedEventArgs e)
+    {
+        if (IconGrid.SelectedItem is IconItem item)
+            System.Windows.Clipboard.SetText(item.ProcessName);
+    }
+
+    private void CtxCopyTooltip_Click(object sender, RoutedEventArgs e)
+    {
+        if (IconGrid.SelectedItem is IconItem item)
+            System.Windows.Clipboard.SetText(item.Tooltip);
+    }
+
+    private void HideSingle(IconItem item)
+    {
+        Log($"右键隐藏: {item.ProcessName} ({item.Tooltip})");
+        Task.Run(() => HideService.Hide(item.ProcessName)).ContinueWith(t =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                item.Status = "已隐藏";
+                AutoSaveRule(item.ProcessName, item.Tooltip);
+                Log($"已隐藏: {item.ProcessName}");
+                SafeDelay(2000, RefreshList);
+            });
+        });
+    }
+
+    private void ShowSingle(IconItem item)
+    {
+        Log($"右键显示: {item.ProcessName}");
+        Task.Run(() => HideService.Show(item.ProcessName)).ContinueWith(t =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                item.Status = "可见";
+                AutoRemoveRule(item.ProcessName);
+                Log($"已显示: {item.ProcessName}");
+                SafeDelay(2000, RefreshList);
+            });
+        });
+    }
+
+    // ========== Hide / Show (batch) ==========
 
     private void HideSelected_Click(object sender, RoutedEventArgs e)
     {
         var selected = _allIcons.Where(i => i.IsSelected).ToList();
-        Log($"点击隐藏选中, 当前选中: {selected.Count} 个");
-
-        if (selected.Count == 0)
-        {
-            StatusText.Text = "请先勾选要隐藏的图标";
-            return;
-        }
+        Log($"隐藏选中: {selected.Count} 个");
+        if (selected.Count == 0) { StatusText.Text = "请先勾选"; return; }
 
         var ids = selected.Select(i => i.ProcessName).Distinct().ToList();
         string identifierStr = string.Join(" ", ids);
-
-        Log($"准备隐藏: [{identifierStr}]");
         StatusText.Text = "正在隐藏...";
 
-        Task.Run(() =>
+        Task.Run(() => HideService.Hide(identifierStr)).ContinueWith(t =>
         {
-            var (ok, msg) = HideService.Hide(identifierStr);
             Dispatcher.Invoke(() =>
             {
-                if (ok)
+                foreach (var item in selected)
                 {
-                    Log("隐藏命令执行成功");
-                    StatusText.Text = "隐藏命令已发送";
-
-                    // Update status in-place (don't remove from list)
-                    foreach (var item in selected)
-                        item.Status = "已隐藏";
-
-                    // Auto-save rules
-                    AutoSaveRules(ids);
+                    item.Status = "已隐藏";
+                    AutoSaveRule(item.ProcessName, item.Tooltip);
                 }
-                else
-                {
-                    Log($"隐藏失败: {msg}");
-                    StatusText.Text = $"失败: {msg}";
-                }
-
-                // Delayed refresh to pick up actual state
-                SafeDelay(2000, () => RefreshList());
+                Log("隐藏命令已发送, 已自动保存规则");
+                StatusText.Text = "隐藏完成";
+                SafeDelay(2000, RefreshList);
             });
         });
     }
@@ -244,42 +392,25 @@ public partial class MainWindow : Window
     private void ShowSelected_Click(object sender, RoutedEventArgs e)
     {
         var selected = _allIcons.Where(i => i.IsSelected).ToList();
-        Log($"点击显示选中, 当前选中: {selected.Count} 个");
-
-        if (selected.Count == 0)
-        {
-            StatusText.Text = "请先勾选要显示的图标";
-            return;
-        }
+        Log($"显示选中: {selected.Count} 个");
+        if (selected.Count == 0) { StatusText.Text = "请先勾选"; return; }
 
         var ids = selected.Select(i => i.ProcessName).Distinct().ToList();
         string identifierStr = string.Join(" ", ids);
-
-        Log($"准备显示: [{identifierStr}]");
         StatusText.Text = "正在显示...";
 
-        Task.Run(() =>
+        Task.Run(() => HideService.Show(identifierStr)).ContinueWith(t =>
         {
-            var (ok, msg) = HideService.Show(identifierStr);
             Dispatcher.Invoke(() =>
             {
-                if (ok)
+                foreach (var item in selected)
                 {
-                    Log("显示命令执行成功");
-                    StatusText.Text = "显示命令已发送";
-
-                    foreach (var item in selected)
-                        item.Status = "可见";
-
-                    AutoRemoveRules(ids);
+                    item.Status = "可见";
+                    AutoRemoveRule(item.ProcessName);
                 }
-                else
-                {
-                    Log($"显示失败: {msg}");
-                    StatusText.Text = $"失败: {msg}";
-                }
-
-                SafeDelay(2000, () => RefreshList());
+                Log("显示命令已发送, 已自动移除规则");
+                StatusText.Text = "显示完成";
+                SafeDelay(2000, RefreshList);
             });
         });
     }
@@ -293,8 +424,8 @@ public partial class MainWindow : Window
             if (File.Exists(_rulesPath))
             {
                 RulesBox.Text = File.ReadAllText(_rulesPath);
-                string[] rules = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                Log($"已加载规则 ({rules.Length} 条): {string.Join(", ", rules)}");
+                var rules = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                Log($"已加载规则 ({rules.Length} 条)");
             }
         }
         catch (Exception ex) { Log($"加载规则失败: {ex.Message}"); }
@@ -305,53 +436,58 @@ public partial class MainWindow : Window
         try
         {
             File.WriteAllText(_rulesPath, RulesBox.Text);
-            string[] rules = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var rules = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             RuleStatus.Text = $"已保存 ({rules.Length} 条)";
-            Log($"规则已保存: {string.Join(", ", rules)}");
+            Log($"规则已保存: {string.Join(", ", rules.Select(r => r.Split('|')[0]))}");
         }
-        catch (Exception ex) { Log($"保存规则失败: {ex.Message}"); }
+        catch (Exception ex) { Log($"保存失败: {ex.Message}"); }
     }
 
-    private void AutoSaveRules(List<string> processNames)
+    /// <summary>
+    /// Save rule in format: "ProcessName|TooltipText"
+    /// </summary>
+    private void AutoSaveRule(string processName, string tooltip)
     {
         try
         {
-            var existing = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-            bool changed = false;
-            foreach (var name in processNames)
+            var rules = GetCurrentRules();
+            // Check if already exists (match by process name before '|')
+            bool exists = rules.Any(r =>
             {
-                if (!existing.Contains(name, StringComparer.OrdinalIgnoreCase))
-                {
-                    existing.Add(name);
-                    changed = true;
-                }
-            }
-            if (changed)
+                string name = r.Contains('|') ? r[..r.IndexOf('|')] : r;
+                return name.Equals(processName, StringComparison.OrdinalIgnoreCase);
+            });
+
+            if (!exists)
             {
-                RulesBox.Text = string.Join("\n", existing);
+                string rule = string.IsNullOrEmpty(tooltip)
+                    ? processName
+                    : $"{processName}|{tooltip}";
+                rules.Add(rule);
+                RulesBox.Text = string.Join("\n", rules);
                 File.WriteAllText(_rulesPath, RulesBox.Text);
-                Log($"自动添加规则: {string.Join(", ", processNames)}");
+                Log($"自动添加规则: {rule}");
             }
         }
         catch (Exception ex) { Log($"自动保存规则失败: {ex.Message}"); }
     }
 
-    private void AutoRemoveRules(List<string> processNames)
+    private void AutoRemoveRule(string processName)
     {
         try
         {
-            var existing = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-            bool changed = false;
-            foreach (var name in processNames)
+            var rules = GetCurrentRules();
+            var filtered = rules.Where(r =>
             {
-                if (existing.RemoveAll(r => r.Equals(name, StringComparison.OrdinalIgnoreCase)) > 0)
-                    changed = true;
-            }
-            if (changed)
+                string name = r.Contains('|') ? r[..r.IndexOf('|')] : r;
+                return !name.Equals(processName, StringComparison.OrdinalIgnoreCase);
+            }).ToList();
+
+            if (filtered.Count != rules.Count)
             {
-                RulesBox.Text = string.Join("\n", existing);
+                RulesBox.Text = string.Join("\n", filtered);
                 File.WriteAllText(_rulesPath, RulesBox.Text);
-                Log($"自动移除规则: {string.Join(", ", processNames)}");
+                Log($"自动移除规则: {processName}");
             }
         }
         catch (Exception ex) { Log($"自动移除规则失败: {ex.Message}"); }
@@ -361,42 +497,31 @@ public partial class MainWindow : Window
     {
         try
         {
-            string rulesText = RulesBox.Text.Trim();
+            string rulesText = RulesBox?.Text?.Trim() ?? "";
             if (string.IsNullOrEmpty(rulesText)) return;
 
             var rules = rulesText.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (rules.Length == 0) return;
 
-            var icons = HideService.EnumerateTrayIcons();
-            var toHide = new List<string>();
-
+            // Extract process names from rules (format: "ProcessName|Tooltip" or just "ProcessName")
+            var identifiers = new List<string>();
             foreach (var rule in rules)
             {
-                foreach (var icon in icons)
-                {
-                    if (icon.ProcessName.Contains(rule, StringComparison.OrdinalIgnoreCase) ||
-                        icon.Tooltip.Contains(rule, StringComparison.OrdinalIgnoreCase))
-                    {
-                        toHide.Add(icon.ProcessName);
-                    }
-                }
+                string name = rule.Contains('|') ? rule[..rule.IndexOf('|')] : rule;
+                if (!string.IsNullOrWhiteSpace(name))
+                    identifiers.Add(name.Trim());
             }
 
-            toHide = toHide.Distinct().ToList();
-            if (toHide.Count == 0) return;
+            if (identifiers.Count == 0) return;
 
-            string identifierStr = string.Join(" ", toHide);
+            string identifierStr = string.Join(" ", identifiers.Distinct());
             Log($"定时隐藏: [{identifierStr}]");
 
-            Task.Run(() =>
+            Task.Run(() => HideService.Hide(identifierStr)).ContinueWith(t =>
             {
-                var (ok, msg) = HideService.Hide(identifierStr);
                 Dispatcher.Invoke(() =>
                 {
-                    if (ok)
-                        RuleStatus.Text = $"已自动隐藏 {toHide.Count} 个 ({DateTime.Now:HH:mm:ss})";
-                    else
-                        RuleStatus.Text = $"自动隐藏失败: {msg}";
+                    RuleStatus.Text = $"已自动隐藏 ({DateTime.Now:HH:mm:ss})";
                 });
             });
         }
@@ -406,19 +531,18 @@ public partial class MainWindow : Window
     private void ApplyRules_Click(object sender, RoutedEventArgs e)
     {
         ApplyRules();
-        SafeDelay(2000, () => RefreshList());
+        SafeDelay(2000, RefreshList);
     }
 
     private void AutoApply_Changed(object sender, RoutedEventArgs e)
     {
-        if (_autoTimer == null || IntervalBox == null) return; // Guard: may fire during init
+        if (_autoTimer == null || IntervalBox == null) return;
         if (AutoApplyCheck.IsChecked == true)
         {
             if (int.TryParse(IntervalBox.Text, out int sec) && sec > 0)
                 _autoTimer.Interval = TimeSpan.FromSeconds(sec);
             else
                 _autoTimer.Interval = TimeSpan.FromSeconds(10);
-
             _autoTimer.Start();
             RuleStatus.Text = $"定时隐藏已启动 (每{_autoTimer.Interval.TotalSeconds}秒)";
             Log($"定时隐藏已启动 (每{_autoTimer.Interval.TotalSeconds}秒)");
@@ -431,6 +555,18 @@ public partial class MainWindow : Window
         }
     }
 
+    // ========== Hidden list window ==========
+
+    private void HiddenList_Click(object sender, RoutedEventArgs e)
+    {
+        var win = new HiddenListWindow
+        {
+            Owner = this,
+            OnRulesChanged = () => { LoadRules(); RefreshList(); }
+        };
+        win.ShowDialog();
+    }
+
     // ========== Filter settings ==========
 
     private void LoadFilter()
@@ -438,18 +574,15 @@ public partial class MainWindow : Window
         try
         {
             if (File.Exists(_filterPath))
-            {
-                string text = File.ReadAllText(_filterPath);
-                _filteredProcesses = text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-            }
+                _filteredProcesses = File.ReadAllText(_filterPath)
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
             else
             {
-                // Default filter list
-                _filteredProcesses = ["Taskmgr.exe", "Idle.exe"];
+                _filteredProcesses = ["Taskmgr", "Idle"];
                 SaveFilterFile();
             }
         }
-        catch { _filteredProcesses = ["Taskmgr.exe", "Idle.exe"]; }
+        catch { _filteredProcesses = ["Taskmgr", "Idle"]; }
     }
 
     private void SaveFilterFile()
@@ -458,37 +591,40 @@ public partial class MainWindow : Window
         catch { }
     }
 
-    private void HiddenList_Click(object sender, RoutedEventArgs e)
-    {
-        var win = new HiddenListWindow
-        {
-            Owner = this,
-            OnRulesChanged = () =>
-            {
-                LoadRules();
-                RefreshList();
-            }
-        };
-        win.ShowDialog();
-    }
-
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new SettingsWindow
         {
             Owner = this,
-            FilterText = string.Join("\n", _filteredProcesses)
+            FilterText = string.Join("\n", _filteredProcesses),
+            MinimizeToTray = _minimizeToTray
         };
         dlg.ShowDialog();
 
         if (dlg.Saved)
         {
             _filteredProcesses = dlg.FilterText
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .ToList();
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
             SaveFilterFile();
-            Log($"过滤进程已更新 ({_filteredProcesses.Count}): {string.Join(", ", _filteredProcesses)}");
+            _minimizeToTray = dlg.MinimizeToTray;
+            SaveConfig();
+            Log($"设置已保存 | 过滤: {string.Join(", ", _filteredProcesses)} | 关闭时最小化到托盘: {_minimizeToTray}");
             RefreshList();
+        }
+    }
+
+    // ========== Window behavior ==========
+
+    private void OnClosing(object? sender, CancelEventArgs e)
+    {
+        if (_minimizeToTray)
+        {
+            e.Cancel = true;
+            MinimizeToTray();
+        }
+        else
+        {
+            ExitApp();
         }
     }
 
@@ -513,23 +649,14 @@ public partial class MainWindow : Window
             try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = path, UseShellExecute = true }); }
             catch (Exception ex) { Log($"打开日志失败: {ex.Message}"); }
         }
-        else { Log($"日志文件不存在: {path}"); }
+        else { Log($"日志不存在: {path}"); }
     }
 
-    /// <summary>
-    /// Safe delayed action using DispatcherTimer (avoids BeginInvoke TimeSpan bug).
-    /// </summary>
     private void SafeDelay(int ms, Action action)
     {
         var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(ms) };
-        timer.Tick += (s, e) => { timer.Stop(); action(); };
+        timer.Tick += (s, ev) => { timer.Stop(); action(); };
         timer.Start();
-    }
-
-    private void OnClosing(object? sender, CancelEventArgs e)
-    {
-        _autoTimer.Stop();
-        _countTimer.Stop();
     }
 }
 

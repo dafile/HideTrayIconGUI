@@ -10,9 +10,6 @@ public partial class HiddenListWindow : Window
     private readonly string _rulesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "rules.txt");
     private readonly ObservableCollection<HiddenItem> _items = new();
 
-    /// <summary>
-    /// Callback to notify main window that rules changed.
-    /// </summary>
     public Action? OnRulesChanged { get; set; }
 
     public HiddenListWindow()
@@ -30,7 +27,7 @@ public partial class HiddenListWindow : Window
     {
         _items.Clear();
 
-        // Read rules
+        // Read rules (format: "ProcessName|Tooltip" or just "ProcessName")
         var rules = new List<string>();
         try
         {
@@ -41,7 +38,7 @@ public partial class HiddenListWindow : Window
         }
         catch { }
 
-        // Get current tray icons to determine status
+        // Get current tray icons
         var currentIcons = HideService.EnumerateTrayIcons();
         var iconDict = currentIcons
             .GroupBy(i => i.ProcessName, StringComparer.OrdinalIgnoreCase)
@@ -49,26 +46,30 @@ public partial class HiddenListWindow : Window
 
         foreach (var rule in rules)
         {
+            string procName = rule;
             string tooltip = "";
-            string area = "";
-            string status = "未知";
-
-            if (iconDict.TryGetValue(rule, out var icon))
+            int sep = rule.IndexOf('|');
+            if (sep > 0)
             {
-                tooltip = icon.Tooltip;
+                procName = rule[..sep];
+                tooltip = rule[(sep + 1)..];
+            }
+
+            string area = "规则";
+            string status = "已隐藏";
+
+            if (iconDict.TryGetValue(procName, out var icon))
+            {
+                // Still visible in tray - might be a duplicate or reappeared
+                if (string.IsNullOrEmpty(tooltip)) tooltip = icon.Tooltip;
                 area = icon.Area;
                 status = icon.Status;
-            }
-            else
-            {
-                // Not found in current icons - might be hidden by hideTrayIcon.exe (hard delete)
-                status = "已隐藏";
             }
 
             _items.Add(new HiddenItem
             {
                 IsSelected = false,
-                ProcessName = rule,
+                ProcessName = procName,
                 Tooltip = tooltip,
                 Area = area,
                 Status = status
@@ -102,13 +103,9 @@ public partial class HiddenListWindow : Window
     private void RemoveSelected_Click(object sender, RoutedEventArgs e)
     {
         var selected = _items.Where(i => i.IsSelected).ToList();
-        if (selected.Count == 0)
-        {
-            CountText.Text = "请先勾选要移除的规则";
-            return;
-        }
+        if (selected.Count == 0) { CountText.Text = "请先勾选"; return; }
 
-        // Remove from rules file
+        // Remove from rules file (match by process name before '|')
         var toRemove = selected.Select(i => i.ProcessName).ToHashSet(StringComparer.OrdinalIgnoreCase);
         try
         {
@@ -116,32 +113,27 @@ public partial class HiddenListWindow : Window
             {
                 var rules = File.ReadAllText(_rulesPath)
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .Where(r => !toRemove.Contains(r))
+                    .Where(r =>
+                    {
+                        string name = r.Contains('|') ? r[..r.IndexOf('|')] : r;
+                        return !toRemove.Contains(name.Trim());
+                    })
                     .ToList();
                 File.WriteAllText(_rulesPath, string.Join("\n", rules));
             }
         }
         catch { }
 
-        // Try to show (restore) the removed icons
-        string identifierStr = string.Join(" ", toRemove);
-        Task.Run(() => HideService.Show(identifierStr));
+        // Try to restore
+        string ids = string.Join(" ", toRemove);
+        Task.Run(() => HideService.Show(ids));
 
-        // Remove from UI
-        foreach (var item in selected)
-            _items.Remove(item);
-
+        foreach (var item in selected) _items.Remove(item);
         UpdateCount();
         OnRulesChanged?.Invoke();
     }
 
-    private void HiddenGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        UpdateCount();
-    }
+    private void HiddenGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateCount();
 }
 
-public class HiddenItem : IconItem
-{
-    // Inherits ProcessName, Tooltip, Area, Status, IsSelected from IconItem
-}
+public class HiddenItem : IconItem { }
