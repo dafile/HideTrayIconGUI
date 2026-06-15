@@ -1,0 +1,14 @@
+# Build intermediates
+**/obj/
+**/bin/Debug/
+**/bin/Release/net8.0-windows/HideTrayIconGUI.*
+**/bin/Release/net8.0-windows/hide_*.log
+**/bin/Release/net8.0-windows/crash.log
+**/bin/Release/net8.0-windows/logs/
+
+# Keep publish directory (release distribution)
+!**/publish/
+
+# VS
+.vs/
+*.user

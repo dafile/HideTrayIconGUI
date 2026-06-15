@@ -1,0 +1,641 @@
+[2026-06-15 12:04:38.850] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:04:38.860] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:04:38.861] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:04:38.861] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:04:38.861] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:04:38.873] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:04:38.875] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:04:38.876] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:04:38.876] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:04:38.877] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:04:38.877] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:04:38.878] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:04:38.878] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:04:38.878] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:04:38.879] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:04:38.879] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:04:38.879] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.884] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 18%
+内存 43%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:04:38.884] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.885] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.885] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.885] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.886] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.886] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.886] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.887] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.887] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.887] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.888] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:38.888] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:04:38.892] [INFO] [UI] Started polling every 5s
+[2026-06-15 12:04:53.880] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:04:53.880] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:04:53.881] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:04:53.881] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:04:53.881] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:04:53.882] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:04:53.882] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:04:53.883] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:04:53.883] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:04:53.883] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:04:53.883] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:04:53.884] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:04:53.884] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:04:53.884] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:04:53.885] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:04:53.885] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:04:53.885] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.886] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 12%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:04:53.886] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.886] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.887] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.887] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.887] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.888] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.888] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.888] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.889] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.889] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.889] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:53.890] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:04:58.038] [INFO] [UI] Saved 1 rules to C:\Users\hzzx\Desktop\publish\hide_rules.json
+[2026-06-15 12:04:58.891] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:04:58.892] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:04:58.892] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:04:58.892] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:04:58.893] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:04:58.893] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:04:58.893] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:04:58.894] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:04:58.894] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:04:58.895] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:04:58.895] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:04:58.895] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:04:58.895] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:04:58.895] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:04:58.896] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:04:58.896] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:04:58.896] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.897] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 11%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:04:58.897] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.897] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.898] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.898] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.898] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.899] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.899] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.899] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.900] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.900] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.900] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:04:58.901] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:24.249] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:24.259] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:24.260] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:24.260] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:24.260] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:24.264] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:24.265] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:24.265] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:24.265] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:24.266] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:24.266] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:24.267] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:24.267] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:24.268] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:24.273] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:24.274] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:24.274] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.275] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 11%
+内存 42%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:24.275] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.276] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.276] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.277] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.277] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.278] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.278] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.278] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.279] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.279] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.280] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.280] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:24.283] [INFO] [UI] Started polling every 5s
+[2026-06-15 12:05:24.286] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:24.286] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:24.289] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:24.290] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:24.290] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:24.290] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:24.291] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:24.291] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:24.291] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:24.292] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:24.292] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:24.292] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:24.293] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:24.293] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:24.294] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:24.294] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:24.295] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.295] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 14%
+内存 42%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:24.295] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.296] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.296] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.297] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.297] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.298] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.298] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.299] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.299] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.300] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.300] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:24.300] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:29.283] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:29.284] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:29.284] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:29.284] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:29.285] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:29.286] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:29.286] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:29.287] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:29.287] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:29.287] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:29.288] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:29.288] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:29.288] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:29.288] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:29.289] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:29.289] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:29.290] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.290] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 10%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:29.290] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.291] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.291] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.291] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.292] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.292] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.292] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.293] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.293] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.293] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.294] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:29.294] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:30.543] [INFO] [UI] Showing 1 icons...
+[2026-06-15 12:05:30.546] [ERROR] [TrayIconSvc] hideTrayIcon.exe not found! Searched: C:\Users\hzzx\Desktop\publish\hideTrayIcon.exe, D:\Personal\Downloads\hideTrayIcon.exe, C:\Program Files\hideTrayIcon\hideTrayIcon.exe
+[2026-06-15 12:05:30.546] [INFO] [UI] FAIL show: 学生： 10.10.106.29 
+已连接到： admin | hideTrayIcon.exe not found! Searched: C:\Users\hzzx\Desktop\publish\hideTrayIcon.exe, D:\Personal\Downloads\hideTrayIcon.exe, C:\Program Files\hideTrayIcon\hideTrayIcon.exe
+[2026-06-15 12:05:33.552] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:33.562] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:33.562] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:33.562] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:33.563] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:33.567] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:33.570] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:33.570] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:33.570] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:33.571] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:33.571] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:33.572] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:33.572] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:33.572] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:33.573] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:33.573] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:33.573] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.574] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 17%
+内存 43%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:33.574] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.574] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.575] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.575] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.576] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.576] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.576] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.577] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.577] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.577] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.578] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.578] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:33.581] [INFO] [UI] Started polling every 5s
+[2026-06-15 12:05:33.583] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:33.584] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:33.586] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:33.586] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:33.586] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:33.587] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:33.587] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:33.588] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:33.588] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:33.588] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:33.589] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:33.589] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:33.589] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:33.590] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:33.590] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:33.591] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:33.591] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.592] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 17%
+内存 43%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:33.592] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.593] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.594] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.595] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.595] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.597] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.597] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.603] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.604] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.604] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.605] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:33.605] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:38.581] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:38.581] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:38.581] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:38.582] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:38.582] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:38.582] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:38.583] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:38.583] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:38.583] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:38.583] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:38.584] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:38.584] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:38.584] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:38.584] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:38.585] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:38.585] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:38.585] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.586] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 15%
+内存 44%
+磁盘 1%
+网络 0%', status=可见
+[2026-06-15 12:05:38.586] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.586] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.587] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.587] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.587] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.588] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.588] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.588] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.589] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.589] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.589] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:38.590] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:43.582] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:43.582] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:43.583] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:43.583] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:43.583] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:43.583] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:43.584] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:43.584] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:43.584] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:43.585] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:43.585] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:43.585] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:43.585] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:43.586] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:43.586] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:43.586] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:43.587] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.587] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 11%
+内存 44%
+磁盘 1%
+网络 0%', status=可见
+[2026-06-15 12:05:43.587] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.588] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.588] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.588] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.589] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.589] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.589] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.590] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.590] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.590] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.590] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:43.591] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:48.581] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:48.581] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:48.582] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:48.582] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:48.582] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:48.582] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:48.582] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:48.583] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:48.583] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:48.583] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:48.583] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:48.584] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:48.584] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:48.584] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:48.584] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:48.585] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:48.585] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:48.585] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:48.585] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:48.585] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:48.586] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:48.586] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:48.586] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:48.586] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:48.586] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:48.587] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:48.587] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:48.587] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:48.587] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:48.588] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:48.588] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:48.588] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.588] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:48.589] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 10%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:48.589] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.589] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.589] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 10%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:48.590] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.590] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.590] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.590] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.590] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.591] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.591] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.591] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.591] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.592] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.592] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.592] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.592] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.592] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.593] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.593] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.593] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.593] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.593] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.594] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.594] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:48.594] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:48.594] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:53.580] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:53.581] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:53.581] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:53.581] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:53.581] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:53.582] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:53.582] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:53.582] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:53.583] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:53.583] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:53.583] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:53.583] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:53.584] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:53.584] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:53.584] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:53.584] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:53.585] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.585] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 10%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:53.585] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.586] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.586] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.586] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.587] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.587] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.587] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.587] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.588] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.588] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.588] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:53.589] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:05:58.580] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:05:58.581] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:05:58.582] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:05:58.582] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:58.582] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:58.583] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:05:58.583] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:05:58.583] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:05:58.584] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:05:58.584] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:05:58.584] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:05:58.585] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:05:58.585] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:05:58.585] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:05:58.586] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:05:58.586] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:05:58.586] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.587] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 11%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:05:58.587] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.587] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.588] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.588] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.588] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.588] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.589] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.589] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.589] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.590] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.590] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:05:58.590] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:06:03.581] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:06:03.582] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:06:03.582] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:06:03.582] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:03.582] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:03.583] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:06:03.583] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:06:03.583] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:06:03.584] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:06:03.584] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:06:03.584] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:06:03.585] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:06:03.585] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:03.585] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:03.585] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:06:03.586] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:06:03.586] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.586] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 9%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:06:03.587] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.587] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.587] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.588] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.588] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.588] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.588] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.589] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.589] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.589] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.590] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.590] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:06:03.608] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:06:03.608] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:06:03.609] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:06:03.609] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:03.609] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:03.609] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:06:03.610] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:06:03.610] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:06:03.610] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:06:03.611] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:06:03.611] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:06:03.611] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:06:03.611] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:03.612] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:03.612] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:06:03.612] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:06:03.612] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.613] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 9%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:06:03.613] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.613] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.614] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.614] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.614] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.615] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.615] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.615] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.616] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.616] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.616] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:03.616] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:06:08.581] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:06:08.581] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:06:08.582] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:06:08.582] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:08.582] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:08.583] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:06:08.583] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:06:08.583] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:06:08.584] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:06:08.584] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:06:08.584] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:06:08.585] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:06:08.585] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:08.585] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:08.585] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:06:08.586] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:06:08.586] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.586] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 10%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:06:08.586] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.587] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.587] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.587] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.588] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.588] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.588] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.589] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.589] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.589] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.590] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:08.590] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:06:13.581] [INFO] [TrayIconSvc] Main tray toolbar: 3410024
+[2026-06-15 12:06:13.581] [INFO] [TrayIconSvc] Reading 已显示 toolbar, explorer PID=8716
+[2026-06-15 12:06:13.582] [INFO] [TrayIconSvc] Button count in 已显示: 4
+[2026-06-15 12:06:13.582] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:13.582] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:13.583] [DEBUG] [TrayIconSvc]   [0] proc=ExamClientAgentMK, tip='英语听说模拟测试系统', status=可见
+[2026-06-15 12:06:13.583] [DEBUG] [TrayIconSvc]   [1] proc=StudentMain, tip='学生： 10.10.106.29 
+已连接到： admin', status=可见
+[2026-06-15 12:06:13.584] [DEBUG] [TrayIconSvc]   [2] proc=explorer, tip='网络 2
+Internet 访问', status=可见
+[2026-06-15 12:06:13.584] [DEBUG] [TrayIconSvc]   [3] proc=explorer, tip='扬声器 (USB): 32%', status=可见
+[2026-06-15 12:06:13.584] [INFO] [TrayIconSvc] Overflow tray toolbar: 857560
+[2026-06-15 12:06:13.585] [INFO] [TrayIconSvc] Reading 已隐藏 toolbar, explorer PID=8716
+[2026-06-15 12:06:13.585] [INFO] [TrayIconSvc] Button count in 已隐藏: 15
+[2026-06-15 12:06:13.585] [DEBUG] [TrayIconSvc] ImageList handle: 7259488
+[2026-06-15 12:06:13.585] [DEBUG] [TrayIconSvc] TBBUTTON size: 32
+[2026-06-15 12:06:13.586] [DEBUG] [TrayIconSvc]   [0] proc=vncserverui, tip='RealVNC Server - Service Mode', status=已隐藏
+[2026-06-15 12:06:13.586] [DEBUG] [TrayIconSvc]   [1] proc=OpenHardwareMonitor, tip='Open Hardware Monitor', status=已隐藏
+[2026-06-15 12:06:13.586] [DEBUG] [TrayIconSvc]   [2] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.587] [DEBUG] [TrayIconSvc]   [3] proc=Taskmgr, tip='CPU 9%
+内存 44%
+磁盘 0%
+网络 0%', status=可见
+[2026-06-15 12:06:13.587] [DEBUG] [TrayIconSvc]   [4] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.587] [DEBUG] [TrayIconSvc]   [5] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.588] [DEBUG] [TrayIconSvc]   [6] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.588] [DEBUG] [TrayIconSvc]   [7] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.588] [DEBUG] [TrayIconSvc]   [8] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.589] [DEBUG] [TrayIconSvc]   [9] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.589] [DEBUG] [TrayIconSvc]   [10] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.589] [DEBUG] [TrayIconSvc]   [11] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.590] [DEBUG] [TrayIconSvc]   [12] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.590] [DEBUG] [TrayIconSvc]   [13] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.590] [DEBUG] [TrayIconSvc]   [14] proc=Taskmgr, tip='任务管理器', status=已隐藏
+[2026-06-15 12:06:13.590] [INFO] [TrayIconSvc] Total icons found: 19
+[2026-06-15 12:06:14.070] [INFO] [UI] Hiding 1 icons...
+[2026-06-15 12:06:14.086] [ERROR] [TrayIconSvc] hideTrayIcon.exe not found! Searched: C:\Users\hzzx\Desktop\publish\hideTrayIcon.exe, D:\Personal\Downloads\hideTrayIcon.exe, C:\Program Files\hideTrayIcon\hideTrayIcon.exe
+[2026-06-15 12:06:14.087] [INFO] [UI] FAIL hide: 英语听说模拟测试系统 | hideTrayIcon.exe not found! Searched: C:\Users\hzzx\Desktop\publish\hideTrayIcon.exe, D:\Personal\Downloads\hideTrayIcon.exe, C:\Program Files\hideTrayIcon\hideTrayIcon.exe
