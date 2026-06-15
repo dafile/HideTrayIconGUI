@@ -316,10 +316,13 @@ public partial class MainWindow : Window
         HideSingle(item);
     }
 
-    private void CtxShow_Click(object sender, RoutedEventArgs e)
+    private void CtxRemove_Click(object sender, RoutedEventArgs e)
     {
         if (IconGrid.SelectedItem is not IconItem item) return;
-        ShowSingle(item);
+        AutoRemoveRule(item.ProcessName);
+        _allIcons.Remove(item);
+        ApplyViewFilter();
+        Log($"已从规则移除: {item.ProcessName}");
     }
 
     private void CtxCopyName_Click(object sender, RoutedEventArgs e)
@@ -619,6 +622,46 @@ public partial class MainWindow : Window
     {
         try { File.WriteAllText(_filterPath, string.Join("\n", _filteredProcesses)); }
         catch { }
+    }
+
+    private void RestartExplorer_Click(object sender, RoutedEventArgs e)
+    {
+        var result = System.Windows.MessageBox.Show(
+            "重启资源管理器会恢复所有已隐藏的托盘图标，桌面会短暂闪烁。\n\n确定要继续吗？",
+            "确认", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question);
+        if (result != System.Windows.MessageBoxResult.Yes) return;
+
+        Log("正在重启资源管理器...");
+        StatusText.Text = "正在重启资源管理器...";
+
+        Task.Run(() =>
+        {
+            try
+            {
+                // Kill explorer.exe
+                foreach (var proc in System.Diagnostics.Process.GetProcessesByName("explorer"))
+                {
+                    proc.Kill();
+                    proc.WaitForExit(5000);
+                }
+                System.Threading.Thread.Sleep(1000);
+
+                // Restart explorer.exe
+                System.Diagnostics.Process.Start("explorer.exe");
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.Invoke(() => Log($"重启资源管理器失败: {ex.Message}"));
+            }
+        }).ContinueWith(t =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                Log("资源管理器已重启, 托盘图标已恢复");
+                StatusText.Text = "资源管理器已重启";
+                SafeDelay(3000, RefreshList);
+            });
+        });
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)

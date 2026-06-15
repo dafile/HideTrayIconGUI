@@ -12,7 +12,7 @@
         <!-- Right-click context menu for icon list -->
         <ContextMenu x:Key="IconContextMenu">
             <MenuItem Header="隐藏此项" Click="CtxHide_Click"/>
-            <MenuItem Header="显示此项" Click="CtxShow_Click"/>
+            <MenuItem Header="移除此项" Click="CtxRemove_Click"/>
             <Separator/>
             <MenuItem Header="复制进程名" Click="CtxCopyName_Click"/>
             <MenuItem Header="复制提示文本" Click="CtxCopyTooltip_Click"/>
@@ -40,6 +40,8 @@
                     <Button Content="取消" Click="DeselectAll_Click" Margin="0,0,6,0"/>
                     <Button Content="隐藏列表" Click="HiddenList_Click" Margin="0,0,6,0"
                             Background="#1976D2" Foreground="White"/>
+                    <Button Content="重启资源管理器" Click="RestartExplorer_Click" Margin="0,0,6,0"
+                            Background="#FF6D00" Foreground="White"/>
                     <Button Content="日志" Click="ViewLog_Click"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
