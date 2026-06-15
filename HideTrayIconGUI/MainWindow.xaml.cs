@@ -186,11 +186,14 @@ public partial class MainWindow : Window
                     icon.ProcessName != null && icon.ProcessName.Contains(f, StringComparison.OrdinalIgnoreCase)))
                     continue;
 
+                // Collapse multi-line tooltip to single line (prevents row height issues)
+                string tooltip = (icon.Tooltip ?? "").Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ").Trim();
+
                 _allIcons.Add(new IconItem
                 {
                     IsSelected = false,
                     ProcessName = icon.ProcessName ?? "",
-                    Tooltip = icon.Tooltip ?? "",
+                    Tooltip = tooltip,
                     Area = icon.Area ?? "",
                     Status = icon.Status ?? ""
                 });
@@ -423,9 +426,17 @@ public partial class MainWindow : Window
         {
             if (File.Exists(_rulesPath))
             {
-                RulesBox.Text = File.ReadAllText(_rulesPath);
-                var rules = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                Log($"已加载规则 ({rules.Length} 条)");
+                // File stores full format: "ProcessName|Tooltip"
+                // Display only process names in the text box
+                var lines = File.ReadAllText(_rulesPath)
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                var displayNames = lines.Select(line =>
+                {
+                    int sep = line.IndexOf('|');
+                    return sep > 0 ? line[..sep] : line;
+                });
+                RulesBox.Text = string.Join("\n", displayNames);
+                Log($"已加载规则 ({lines.Length} 条)");
             }
         }
         catch (Exception ex) { Log($"加载规则失败: {ex.Message}"); }
@@ -435,10 +446,29 @@ public partial class MainWindow : Window
     {
         try
         {
-            File.WriteAllText(_rulesPath, RulesBox.Text);
-            var rules = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            RuleStatus.Text = $"已保存 ({rules.Length} 条)";
-            Log($"规则已保存: {string.Join(", ", rules.Select(r => r.Split('|')[0]))}");
+            // RulesBox only shows process names. Merge with existing tooltip data from file.
+            var existingRules = GetCurrentRules(); // full format from file
+            var tooltipMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var rule in existingRules)
+            {
+                int sep = rule.IndexOf('|');
+                if (sep > 0)
+                    tooltipMap[rule[..sep]] = rule[(sep + 1)..];
+            }
+
+            // User-edited process names
+            var names = RulesBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var merged = names.Select(name =>
+            {
+                string trimmed = name.Trim();
+                if (tooltipMap.TryGetValue(trimmed, out string? tip))
+                    return $"{trimmed}|{tip}";
+                return trimmed;
+            });
+
+            File.WriteAllText(_rulesPath, string.Join("\n", merged));
+            RuleStatus.Text = $"已保存 ({names.Length} 条)";
+            Log($"规则已保存: {string.Join(", ", names)}");
         }
         catch (Exception ex) { Log($"保存失败: {ex.Message}"); }
     }
