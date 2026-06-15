@@ -75,15 +75,12 @@ public partial class MainWindow : Window
         {
             _allIcons.Clear();
             var icons = HideService.EnumerateTrayIcons();
-            if (icons == null)
-            {
-                Log("EnumerateTrayIcons 返回 null");
-                return;
-            }
+            if (icons == null) { Log("EnumerateTrayIcons 返回 null"); return; }
+
+            // Add all visible icons
             foreach (var icon in icons)
             {
                 if (icon == null) continue;
-                // Apply process filter
                 if (_filteredProcesses != null && _filteredProcesses.Any(f =>
                     icon.ProcessName != null && icon.ProcessName.Contains(f, StringComparison.OrdinalIgnoreCase)))
                     continue;
@@ -97,13 +94,45 @@ public partial class MainWindow : Window
                     Status = icon.Status ?? ""
                 });
             }
+
+            // Merge rules (hidden items that may have been hard-deleted by hideTrayIcon.exe)
+            var rules = GetCurrentRules();
+            var existingNames = _allIcons.Select(i => i.ProcessName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            foreach (var rule in rules)
+            {
+                if (!existingNames.Contains(rule))
+                {
+                    _allIcons.Add(new IconItem
+                    {
+                        IsSelected = false,
+                        ProcessName = rule,
+                        Tooltip = "",
+                        Area = "规则",
+                        Status = "已隐藏"
+                    });
+                }
+            }
+
             ApplyViewFilter();
-            Log($"刷新列表: {_allIcons.Count} 个图标");
+            Log($"刷新列表: {_allIcons.Count} 个 (含规则中隐藏项)");
         }
         catch (Exception ex)
         {
             Log($"刷新列表异常: {ex.GetType().Name}: {ex.Message}");
         }
+    }
+
+    private List<string> GetCurrentRules()
+    {
+        try
+        {
+            if (File.Exists(_rulesPath))
+                return File.ReadAllText(_rulesPath)
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .ToList();
+        }
+        catch { }
+        return [];
     }
 
     private void ApplyViewFilter()
@@ -427,6 +456,20 @@ public partial class MainWindow : Window
     {
         try { File.WriteAllText(_filterPath, string.Join("\n", _filteredProcesses)); }
         catch { }
+    }
+
+    private void HiddenList_Click(object sender, RoutedEventArgs e)
+    {
+        var win = new HiddenListWindow
+        {
+            Owner = this,
+            OnRulesChanged = () =>
+            {
+                LoadRules();
+                RefreshList();
+            }
+        };
+        win.ShowDialog();
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)

@@ -27,6 +27,8 @@
                     <Button Content="显示选中" Click="ShowSelected_Click" Margin="0,0,6,0"/>
                     <Button Content="全选" Click="SelectAll_Click" Margin="0,0,6,0"/>
                     <Button Content="取消" Click="DeselectAll_Click" Margin="0,0,6,0"/>
+                    <Button Content="隐藏列表" Click="HiddenList_Click" Margin="0,0,6,0"
+                            Background="#1976D2" Foreground="White"/>
                     <Button Content="日志" Click="ViewLog_Click"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
@@ -65,7 +67,7 @@
         <Border Grid.Row="2" Background="White" CornerRadius="4" Padding="10,8"
                 BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,8,0,0">
             <DockPanel>
-                <TextBlock Text="隐藏规则 (每行一条，进程名或提示文本子串，隐藏选中时自动添加):"
+                <TextBlock Text="隐藏规则 (每行一条，隐藏选中时自动添加):"
                            FontWeight="SemiBold" DockPanel.Dock="Top" Margin="0,0,0,6"/>
                 <TextBox x:Name="RulesBox" AcceptsReturn="True" TextWrapping="Wrap"
                          VerticalScrollBarVisibility="Auto" Height="70"
@@ -73,7 +75,7 @@
             </DockPanel>
         </Border>
 
-        <!-- Rule controls + Settings -->
+        <!-- Rule controls -->
         <Border Grid.Row="3" Background="White" CornerRadius="4" Padding="10,6"
                 BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,6,0,0">
             <DockPanel>
@@ -98,5 +100,4 @@
                  VerticalScrollBarVisibility="Auto" FontSize="11" FontFamily="Consolas"
                  Background="#1E1E1E" Foreground="#CCCCCC" Padding="6"/>
     </Grid>
-
 </Window>
