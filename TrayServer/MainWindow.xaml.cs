@@ -243,12 +243,21 @@ public partial class MainWindow : Window
 
     private void Log(string level, string msg)
     {
-        string ts = DateTime.Now.ToString("HH:mm:ss.fff");
-        LogBox.AppendText($"[{ts}] [{level}] {msg}\n");
-        LogBox.ScrollToEnd();
-        File.AppendAllText(
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", $"server_{DateTime.Now:yyyyMMdd}.log"),
-            $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [{level}] {msg}\n");
+        try
+        {
+            string ts = DateTime.Now.ToString("HH:mm:ss.fff");
+            if (LogBox != null)
+            {
+                LogBox.AppendText($"[{ts}] [{level}] {msg}\n");
+                LogBox.ScrollToEnd();
+            }
+            string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
+            Directory.CreateDirectory(logDir);
+            File.AppendAllText(
+                Path.Combine(logDir, $"server_{DateTime.Now:yyyyMMdd}.log"),
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [{level}] {msg}\n");
+        }
+        catch { }
     }
 
     private void OnClosing(object? sender, CancelEventArgs e)
