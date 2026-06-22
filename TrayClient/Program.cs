@@ -21,12 +21,12 @@ class Program
     static volatile bool _running = true;
     static TcpClient? _client;
     static StreamWriter? _writer;
-    static List<RuleEntry> _currentEntries = [];  // flat list of process names to hide
+    static List<RuleEntry> _currentEntries = [];
     static List<string> _currentFilter = [];
+    static string serverIp = "10.10.106.27"; // stored for restart
 
     static void Main(string[] args)
     {
-        string serverIp = "10.10.106.27";
         int port = 9527;
 
         for (int i = 0; i < args.Length - 1; i++)
@@ -152,12 +152,25 @@ class Program
                     SendAck(true, "Restarting...");
                     Log("Server requested restart.");
                     Thread.Sleep(500);
-                    Process.Start(new ProcessStartInfo
+                    // Launch new instance detached via cmd start
+                    try
                     {
-                        FileName = Environment.ProcessPath!,
-                        Arguments = $"--server {_client?.Client.RemoteEndPoint?.ToString()?.Split(':')[0]}",
-                        UseShellExecute = false
-                    });
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = "cmd.exe",
+                            Arguments = $"/c start \"\" \"{Environment.ProcessPath}\" --server {serverIp}",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        };
+                        Process.Start(psi);
+                        Log($"Restart launched: {Environment.ProcessPath} --server {serverIp}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Restart failed: {ex.Message}");
+                    }
+                    Thread.Sleep(1000);
                     _running = false;
                     Environment.Exit(0);
                     break;

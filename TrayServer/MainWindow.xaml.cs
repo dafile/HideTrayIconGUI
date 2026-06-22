@@ -48,17 +48,21 @@ public partial class MainWindow : Window
         _server.OnLog += (level, msg) => Dispatcher.Invoke(() => Log(level, msg));
         _server.OnClientConnected += id => Dispatcher.Invoke(() =>
         {
+            var info = _server.GetOnlineClients().FirstOrDefault(c => c.HostName == id);
             var existing = _clients.FirstOrDefault(c => c.HostName == id);
             if (existing != null)
             {
                 existing.Status = "在线";
                 existing.LastSeen = DateTime.Now;
+                if (info != null && !string.IsNullOrEmpty(info.IpAddress))
+                    existing.IpAddress = info.IpAddress;
             }
             else
             {
                 _clients.Add(new ClientItem
                 {
                     HostName = id,
+                    IpAddress = info?.IpAddress ?? "",
                     Status = "在线",
                     ConnectedAt = DateTime.Now,
                     LastSeen = DateTime.Now,
@@ -192,6 +196,16 @@ public partial class MainWindow : Window
         if (ClientGrid.SelectedItem is not ClientItem client) return;
         _clients.Remove(client);
         SaveClients();
+    }
+
+    private void ClientGrid_RowEditEnding(object? sender, DataGridRowEditEndingEventArgs e)
+    {
+        // Auto-save remarks when user finishes editing a row
+        Dispatcher.BeginInvoke(() =>
+        {
+            SaveAssignmentsAndRemarks();
+            Log("INFO", "备注已自动保存");
+        });
     }
 
     // ========== Top toolbar actions ==========
@@ -345,6 +359,14 @@ public partial class MainWindow : Window
         UpdateCycleInterval();
     }
 
+    private void CycleInterval_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (CustomCycleBox == null || CycleIntervalCombo == null) return; // Guard: may fire during init
+        string selected = (CycleIntervalCombo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+        CustomCycleBox.Visibility = selected == "自定义" ? Visibility.Visible : Visibility.Collapsed;
+        UpdateCycleInterval();
+    }
+
     private void UpdateCycleInterval()
     {
         _cycleTimer.Stop();
@@ -358,16 +380,16 @@ public partial class MainWindow : Window
 
     private int GetCycleSeconds()
     {
-        string selected = (CycleIntervalCombo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "60秒";
+        string selected = (CycleIntervalCombo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "10秒";
         return selected switch
         {
+            "1秒" => 1,
+            "2秒" => 2,
+            "3秒" => 3,
+            "5秒" => 5,
             "10秒" => 10,
-            "30秒" => 30,
-            "60秒" => 60,
-            "5分钟" => 300,
-            "10分钟" => 600,
-            "自定义" => int.TryParse(CustomCycleBox.Text, out int v) && v > 0 ? v : 60,
-            _ => 60
+            "自定义" => int.TryParse(CustomCycleBox.Text, out int v) && v > 0 ? v : 10,
+            _ => 10
         };
     }
 

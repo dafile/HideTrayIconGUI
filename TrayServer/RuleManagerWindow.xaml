@@ -16,7 +16,7 @@
         <DockPanel Grid.Column="0">
             <TextBlock Text="规则列表" FontWeight="SemiBold" DockPanel.Dock="Top" Margin="0,0,0,6"/>
             <ListBox x:Name="RuleList" SelectionChanged="RuleList_SelectionChanged"
-                     DockPanel.Dock="Top" Height="*"/>
+                     DockPanel.Dock="Top"/>
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
                 <Button Content="新建" Click="NewRule_Click" Width="55" Margin="0,0,6,0"/>
                 <Button Content="删除" Click="DeleteRule_Click" Width="55"/>
