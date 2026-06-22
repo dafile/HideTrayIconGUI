@@ -155,11 +155,47 @@ public partial class MainWindow : Window
         if (depObj is DataGridRow row && row.DataContext is ClientItem item)
         {
             ClientGrid.SelectedItem = item;
+
+            // Build dynamic "Assign rule" submenu
+            var assignRuleItem = ((ContextMenu)FindResource("ClientMenu")).Items
+                .Cast<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "分配规则");
+            if (assignRuleItem != null)
+            {
+                assignRuleItem.Items.Clear();
+                foreach (var rule in _rules)
+                {
+                    var mi = new MenuItem { Header = rule.Name, Tag = rule.Id };
+                    mi.Click += (s2, e2) => AssignRuleToClient(item, rule);
+                    assignRuleItem.Items.Add(mi);
+                }
+            }
+
             var menu = (ContextMenu)FindResource("ClientMenu");
             menu.DataContext = item;
             menu.IsOpen = true;
             e.Handled = true;
         }
+    }
+
+    private void AssignRuleToClient(ClientItem client, RuleInfo rule)
+    {
+        client.RuleName = rule.Name;
+        SaveAssignmentsAndRemarks();
+        ClientGrid.Items.Refresh();
+
+        // Push rules to this client
+        var config = new ClientConfig { Rules = _rules, Filter = _filter };
+        _server.SendToClient(client.HostName, ProtocolMessage.Create(MsgType.UpdateRules, config));
+        Log("INFO", $"分配规则 [{rule.Name}] 到 {client.HostName}");
+    }
+
+    private void ClearRule_Click(object sender, RoutedEventArgs e)
+    {
+        if (ClientGrid.SelectedItem is not ClientItem client) return;
+        client.RuleName = "";
+        SaveAssignmentsAndRemarks();
+        ClientGrid.Items.Refresh();
+        Log("INFO", $"清除 {client.HostName} 的规则");
     }
 
     private void ViewTrayIcons_Click(object sender, RoutedEventArgs e)
@@ -239,6 +275,38 @@ public partial class MainWindow : Window
     private void ApplyAllRules_Click(object sender, RoutedEventArgs e)
     {
         PushRulesToAllClients();
+    }
+
+    private void BatchApplyRules_Click(object sender, RoutedEventArgs e)
+    {
+        var selectedClients = _clients.Where(c => c.IsSelected).ToList();
+        if (selectedClients.Count == 0) { Log("WARN", "请先勾选客户端"); return; }
+        if (_rules.Count == 0) { Log("WARN", "没有可用规则，请先在规则设置中创建"); return; }
+
+        // Show rule selection dialog
+        var ruleNames = _rules.Select(r => r.Name).ToList();
+        var dlg = new RuleSelectDialog(ruleNames) { Owner = this };
+        dlg.ShowDialog();
+
+        if (!dlg.Saved || dlg.SelectedRuleName == null) return;
+
+        var rule = _rules.FirstOrDefault(r => r.Name == dlg.SelectedRuleName);
+        if (rule == null) return;
+
+        // Assign rule to selected clients
+        foreach (var client in selectedClients)
+        {
+            client.RuleName = rule.Name;
+        }
+        SaveAssignmentsAndRemarks();
+
+        // Push rules to those clients
+        var config = new ClientConfig { Rules = _rules, Filter = _filter };
+        var msg = ProtocolMessage.Create(MsgType.UpdateRules, config);
+        _server.SendToMany(selectedClients.Select(c => c.HostName), msg);
+
+        Log("INFO", $"批量分配规则 [{rule.Name}] 到 {selectedClients.Count} 台客户端");
+        ClientGrid.Items.Refresh();
     }
 
     private void HideSingleIcon_Click(object sender, RoutedEventArgs e)

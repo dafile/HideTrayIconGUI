@@ -10,6 +10,16 @@
     <Window.Resources>
         <ContextMenu x:Key="ClientMenu">
             <MenuItem Header="查看托盘图标" Click="ViewTrayIcons_Click"/>
+            <Separator/>
+            <MenuItem x:Name="AssignRuleSubmenu" Header="分配规则">
+                <MenuItem.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel/>
+                    </ItemsPanelTemplate>
+                </MenuItem.ItemsPanel>
+            </MenuItem>
+            <MenuItem Header="清除规则" Click="ClearRule_Click"/>
+            <Separator/>
             <MenuItem Header="重启客户端" Click="RestartClient_Click"/>
             <MenuItem Header="重启资源管理器" Click="RestartExplorer_Click"/>
             <Separator/>
@@ -44,7 +54,7 @@
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                     <Button Content="刷新客户端" Click="RefreshClients_Click" Background="#1976D2" Foreground="White"/>
-                    <Button Content="全部应用规则" Click="ApplyAllRules_Click" Background="#D32F2F" Foreground="White"/>
+                    <Button Content="批量应用规则" Click="BatchApplyRules_Click" Background="#D32F2F" Foreground="White"/>
                     <Button Content="批量隐藏选中" Click="BatchHide_Click"/>
                     <Button Content="规则设置" Click="RulesSettings_Click" Background="#388E3C" Foreground="White"/>
                     <Button Content="过滤设置" Click="FilterSettings_Click"/>
@@ -94,10 +104,10 @@
                     <DataGridTextColumn Header="规则" Binding="{Binding RuleName}" Width="80" IsReadOnly="True"/>
                     <DataGridTextColumn Header="备注" Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="80"/>
                     <DataGridTextColumn Header="IP" Binding="{Binding IpAddress}" Width="110" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="50"/>
-                    <DataGridTextColumn Header="连接时间" Binding="{Binding ConnectedAt, StringFormat='HH:mm:ss'}" Width="70"/>
-                    <DataGridTextColumn Header="最后响应" Binding="{Binding LastSeen, StringFormat='HH:mm:ss'}" Width="70"/>
-                    <DataGridTextColumn Header="图标数" Binding="{Binding IconCount}" Width="50"/>
+                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="50" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="连接时间" Binding="{Binding ConnectedAt, StringFormat='HH:mm:ss'}" Width="70" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="最后响应" Binding="{Binding LastSeen, StringFormat='HH:mm:ss'}" Width="70" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="图标数" Binding="{Binding IconCount}" Width="50" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
