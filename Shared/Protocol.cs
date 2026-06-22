@@ -39,24 +39,25 @@ public class ProtocolMessage
 public static class MsgType
 {
     // Client -> Server
-    public const string Register = "register";          // Client registers with hostname
-    public const string TrayIcons = "tray_icons";      // Client reports tray icon list
-    public const string Ack = "ack";                    // Acknowledgement
-    public const string Error = "error";                // Error response
-    public const string Pong = "pong";                  // Heartbeat response
+    public const string Register = "register";
+    public const string TrayIcons = "tray_icons";
+    public const string Ack = "ack";
+    public const string Error = "error";
+    public const string Pong = "pong";
 
     // Server -> Client
-    public const string Hide = "hide";                  // Hide tray icons
-    public const string Show = "show";                  // Show tray icons
-    public const string Restart = "restart";            // Restart client
-    public const string UpdateRules = "update_rules";   // Update rules
-    public const string UpdateFilter = "update_filter"; // Update filter list
-    public const string GetTrayIcons = "get_tray_icons";// Request tray icon list
-    public const string Ping = "ping";                  // Heartbeat
-    public const string RestartExplorer = "restart_explorer"; // Restart explorer.exe
+    public const string Hide = "hide";
+    public const string Show = "show";
+    public const string Restart = "restart";
+    public const string UpdateRules = "update_rules";
+    public const string UpdateFilter = "update_filter";
+    public const string GetTrayIcons = "get_tray_icons";
+    public const string Ping = "ping";
+    public const string RestartExplorer = "restart_explorer";
 }
 
-// Data models
+// ========== Data Models ==========
+
 public class ClientInfo
 {
     public string HostName { get; set; } = "";
@@ -79,9 +80,40 @@ public class HideRequest
     public List<string> Identifiers { get; set; } = [];
 }
 
+/// <summary>
+/// A single rule containing multiple entries.
+/// </summary>
+public class RuleInfo
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString("N")[..8];
+    public string Name { get; set; } = "";
+    public List<RuleEntry> Entries { get; set; } = [];
+}
+
+/// <summary>
+/// A single entry in a rule: process name + tooltip (for reference).
+/// </summary>
+public class RuleEntry
+{
+    public string ProcessName { get; set; } = "";
+    public string Tooltip { get; set; } = ""; // reference only, not editable
+}
+
+/// <summary>
+/// Full config push to a client: rules + filter.
+/// </summary>
+public class ClientConfig
+{
+    public List<RuleInfo> Rules { get; set; } = [];
+    public List<string> Filter { get; set; } = [];
+}
+
+/// <summary>
+/// Legacy: for backward compat with old clients.
+/// </summary>
 public class RulesUpdate
 {
-    public List<string> Rules { get; set; } = [];  // format: "ProcessName|Tooltip" or "ProcessName"
+    public List<string> Rules { get; set; } = [];
 }
 
 public class FilterUpdate

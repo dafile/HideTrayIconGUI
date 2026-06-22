@@ -90,7 +90,10 @@ public class ServerService : IDisposable
                             clientId = info.HostName;
                             conn.Info = info;
                             conn.Info.LastSeen = DateTime.Now;
-                            conn.IpAddress = tcpClient.Client.RemoteEndPoint?.ToString()?.Split(':')[0] ?? "";
+                            conn.IpAddress = info.IpAddress;
+                            if (string.IsNullOrEmpty(conn.IpAddress))
+                                conn.IpAddress = tcpClient.Client.RemoteEndPoint?.ToString()?.Split(':')[0] ?? "";
+                            conn.Info.IpAddress = conn.IpAddress;
                             _clients[clientId] = conn;
                             OnClientConnected?.Invoke(clientId);
                             Log("INFO", $"Client registered: {clientId} ({conn.IpAddress})");

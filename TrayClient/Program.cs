@@ -21,13 +21,12 @@ class Program
     static volatile bool _running = true;
     static TcpClient? _client;
     static StreamWriter? _writer;
-    static List<string> _currentRules = [];
+    static List<RuleEntry> _currentEntries = [];  // flat list of process names to hide
     static List<string> _currentFilter = [];
 
     static void Main(string[] args)
     {
-        // Parse server address from args
-        string serverIp = "10.10.106.27"; // default
+        string serverIp = "10.10.106.27";
         int port = 9527;
 
         for (int i = 0; i < args.Length - 1; i++)
@@ -38,23 +37,14 @@ class Program
                 int.TryParse(args[i + 1], out port);
         }
 
-        // Auto-register for startup
         TryRegisterStartup();
-
         LoadLocalConfig();
         Log($"Client starting, hostname={HostName}, server={serverIp}:{port}");
 
-        // Main loop with auto-reconnect
         while (_running)
         {
-            try
-            {
-                ConnectAndRun(serverIp, port);
-            }
-            catch (Exception ex)
-            {
-                Log($"Connection error: {ex.Message}");
-            }
+            try { ConnectAndRun(serverIp, port); }
+            catch (Exception ex) { Log($"Connection error: {ex.Message}"); }
 
             if (_running)
             {
@@ -75,7 +65,6 @@ class Program
         var reader = new StreamReader(stream, Encoding.UTF8);
         _writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
-        // Register with server
         SendMessage(new ProtocolMessage
         {
             Type = MsgType.Register,
@@ -88,15 +77,12 @@ class Program
             })
         });
 
-        // Read loop
         while (_running && _client.Connected)
         {
             string? line = reader.ReadLine();
             if (line == null) break;
-
             var msg = ProtocolMessage.Deserialize(line);
             if (msg == null) continue;
-
             HandleMessage(msg);
         }
 
@@ -145,26 +131,20 @@ class Program
                     break;
 
                 case MsgType.UpdateRules:
-                    var rulesUpdate = msg.DeserializePayload<RulesUpdate>();
-                    if (rulesUpdate != null)
+                    // New format: ClientConfig with Rules + Filter
+                    var config = msg.DeserializePayload<ClientConfig>();
+                    if (config != null)
                     {
-                        _currentRules = rulesUpdate.Rules;
-                        File.WriteAllText(RulesPath, string.Join("\n", _currentRules));
-                        Log($"Rules updated: {_currentRules.Count} rules");
-                        // Apply rules immediately
-                        ApplyRules();
-                        SendAck(true, $"Rules updated: {_currentRules.Count}");
-                    }
-                    break;
-
-                case MsgType.UpdateFilter:
-                    var filterUpdate = msg.DeserializePayload<FilterUpdate>();
-                    if (filterUpdate != null)
-                    {
-                        _currentFilter = filterUpdate.FilteredProcesses;
+                        _currentEntries = config.Rules.SelectMany(r => r.Entries).ToList();
+                        _currentFilter = config.Filter;
+                        // Save to local files
+                        var ruleLines = _currentEntries.Select(e =>
+                            string.IsNullOrEmpty(e.Tooltip) ? e.ProcessName : $"{e.ProcessName}|{e.Tooltip}");
+                        File.WriteAllText(RulesPath, string.Join("\n", ruleLines));
                         File.WriteAllText(FilterPath, string.Join("\n", _currentFilter));
-                        Log($"Filter updated: {_currentFilter.Count} entries");
-                        SendAck(true, $"Filter updated: {_currentFilter.Count}");
+                        Log($"Config updated: {config.Rules.Count} rules, {_currentEntries.Count} entries, {_currentFilter.Count} filters");
+                        ApplyRules();
+                        SendAck(true, $"Config applied: {_currentEntries.Count} entries");
                     }
                     break;
 
@@ -197,14 +177,10 @@ class Program
 
     static void ApplyRules()
     {
-        if (_currentRules.Count == 0) return;
+        if (_currentEntries.Count == 0) return;
 
-        var identifiers = _currentRules.Select(r =>
-        {
-            int sep = r.IndexOf('|');
-            return sep > 0 ? r[..sep] : r;
-        }).Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().ToList();
-
+        var identifiers = _currentEntries.Select(e => e.ProcessName)
+            .Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().ToList();
         if (identifiers.Count == 0) return;
 
         string ids = string.Join(" ", identifiers);
@@ -257,15 +233,8 @@ class Program
 
     static void SendMessage(ProtocolMessage msg)
     {
-        try
-        {
-            _writer?.Write(msg.Serialize());
-            _writer?.Flush();
-        }
-        catch (Exception ex)
-        {
-            Log($"SendMessage error: {ex.Message}");
-        }
+        try { _writer?.Write(msg.Serialize()); _writer?.Flush(); }
+        catch (Exception ex) { Log($"SendMessage error: {ex.Message}"); }
     }
 
     static void SendAck(bool ok, string message)
@@ -278,13 +247,22 @@ class Program
         try
         {
             if (File.Exists(RulesPath))
-                _currentRules = File.ReadAllText(RulesPath)
+            {
+                _currentEntries = File.ReadAllText(RulesPath)
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .ToList();
+                    .Select(line =>
+                    {
+                        int sep = line.IndexOf('|');
+                        return new RuleEntry
+                        {
+                            ProcessName = sep > 0 ? line[..sep] : line,
+                            Tooltip = sep > 0 ? line[(sep + 1)..] : ""
+                        };
+                    }).ToList();
+            }
             if (File.Exists(FilterPath))
                 _currentFilter = File.ReadAllText(FilterPath)
-                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .ToList();
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
             else
                 _currentFilter = ["Taskmgr", "Idle"];
         }
@@ -296,20 +274,15 @@ class Program
         try
         {
             string startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            string shortcutPath = Path.Combine(startupDir, "TrayClient.lnk");
-            if (!File.Exists(shortcutPath))
+            string batPath = Path.Combine(startupDir, "TrayClient.bat");
+            if (!File.Exists(batPath))
             {
-                // Create a .bat startup script instead of shortcut (simpler)
-                string batPath = Path.Combine(startupDir, "TrayClient.bat");
                 string exePath = Environment.ProcessPath ?? "";
                 File.WriteAllText(batPath, $"@echo off\r\nstart \"\" \"{exePath}\" --server 10.10.106.27\r\n");
                 Log($"Registered startup: {batPath}");
             }
         }
-        catch (Exception ex)
-        {
-            Log($"Startup registration failed: {ex.Message}");
-        }
+        catch (Exception ex) { Log($"Startup registration failed: {ex.Message}"); }
     }
 
     static string GetLocalIp()
@@ -331,9 +304,7 @@ class Program
             string ts = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             string line = $"[{ts}] {msg}";
             Console.WriteLine(line);
-            File.AppendAllText(
-                Path.Combine(LogDir, $"client_{DateTime.Now:yyyyMMdd}.log"),
-                line + Environment.NewLine);
+            File.AppendAllText(Path.Combine(LogDir, $"client_{DateTime.Now:yyyyMMdd}.log"), line + Environment.NewLine);
         }
         catch { }
     }

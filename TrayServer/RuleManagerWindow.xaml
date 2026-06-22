@@ -1,0 +1,69 @@
+<Window x:Class="TrayServer.RuleManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="规则管理" Width="750" Height="500"
+        MinWidth="550" MinHeight="350"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False" Background="#F5F5F5"
+        Loaded="OnLoaded">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Rule list -->
+        <DockPanel Grid.Column="0">
+            <TextBlock Text="规则列表" FontWeight="SemiBold" DockPanel.Dock="Top" Margin="0,0,0,6"/>
+            <ListBox x:Name="RuleList" SelectionChanged="RuleList_SelectionChanged"
+                     DockPanel.Dock="Top" Height="*"/>
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
+                <Button Content="新建" Click="NewRule_Click" Width="55" Margin="0,0,6,0"/>
+                <Button Content="删除" Click="DeleteRule_Click" Width="55"/>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Right: Rule detail -->
+        <Grid Grid.Column="1" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="规则名称:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="RuleNameBox" Width="200" Padding="3,2"/>
+            </StackPanel>
+
+            <TextBlock Grid.Row="1" Text="规则条目 (进程名 | 提示文本 只读)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+
+            <DataGrid Grid.Row="2" x:Name="EntriesGrid" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="进程名" Binding="{Binding ProcessName}" Width="*" MinWidth="100"/>
+                    <DataGridTextColumn Header="提示文本 (只读参考)" Binding="{Binding Tooltip}" Width="2*" MinWidth="120"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Add entry -->
+            <Border Grid.Row="3" Margin="0,8,0,0" Padding="8,6" Background="White"
+                    BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="3">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="进程名:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBox x:Name="EntryProcessBox" Width="140" Padding="3,2" Margin="0,0,10,0"/>
+                    <TextBlock Text="提示文本:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBox x:Name="EntryTooltipBox" Width="200" Padding="3,2" Margin="0,0,10,0"/>
+                    <Button Content="添加" Click="AddEntry_Click"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                <Button Content="删除选中条目" Click="DeleteEntry_Click" Margin="0,0,8,0"/>
+                <Button Content="保存规则" Click="SaveRule_Click" Background="#1976D2" Foreground="White"
+                        Padding="16,5"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
