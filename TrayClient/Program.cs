@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using Shared;
@@ -8,13 +9,12 @@ using Shared;
 namespace TrayClient;
 
 /// <summary>
-/// Headless tray icon client. No UI, no tray icon, no windows.
-/// Connects to server, receives commands, applies them locally.
-/// Usage: TrayClient.exe --server 10.10.106.27
+/// Silent background client. No UI, no console, no tray icon.
+/// Usage: TrayClient.exe [--server IP] [--port PORT] [--logdir PATH]
 /// </summary>
 class Program
 {
-    static readonly string LogDir = Path.Combine(Path.GetTempPath(), "TrayClient_Logs");
+    static string LogDir = Path.Combine(Path.GetTempPath(), "TrayClient_Logs");
     static readonly string RulesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "rules.txt");
     static readonly string FilterPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "filter.txt");
     static readonly string HostName = Environment.MachineName;
@@ -23,10 +23,20 @@ class Program
     static StreamWriter? _writer;
     static List<RuleEntry> _currentEntries = [];
     static List<string> _currentFilter = [];
-    static string serverIp = "10.10.106.27"; // stored for restart
+    static string serverIp = "10.10.106.27";
+
+    [DllImport("kernel32.dll")]
+    static extern IntPtr GetConsoleWindow();
+    [DllImport("user32.dll")]
+    static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+    const int SW_HIDE = 0;
 
     static void Main(string[] args)
     {
+        // Hide console window immediately (in case someone runs .exe directly)
+        var hwnd = GetConsoleWindow();
+        if (hwnd != IntPtr.Zero) ShowWindow(hwnd, SW_HIDE);
+
         int port = 9527;
 
         for (int i = 0; i < args.Length - 1; i++)
@@ -35,12 +45,17 @@ class Program
                 serverIp = args[i + 1];
             if (args[i] == "--port" || args[i] == "-p")
                 int.TryParse(args[i + 1], out port);
+            if (args[i] == "--logdir" || args[i] == "-l")
+                LogDir = args[i + 1];
         }
+
+        // Ensure log directory exists
+        try { Directory.CreateDirectory(LogDir); } catch { }
 
         TryRegisterStartup();
         LoadLocalConfig();
-        Log($"Client starting, hostname={HostName}, server={serverIp}:{port}");
-        Log($"Loaded {_currentEntries.Count} rule entries, {_currentFilter.Count} filters (will apply when server sends hide commands)");
+        Log($"Client starting, hostname={HostName}, server={serverIp}:{port}, logdir={LogDir}");
+        Log($"Loaded {_currentEntries.Count} rule entries, {_currentFilter.Count} filters");
 
         while (_running)
         {
@@ -107,7 +122,6 @@ class Program
                     if (hideReq?.Identifiers != null && hideReq.Identifiers.Count > 0)
                     {
                         string ids = string.Join(" ", hideReq.Identifiers);
-                        // Run async to not block message loop (hideTrayIcon.exe can hang)
                         _ = Task.Run(() =>
                         {
                             var (ok, output) = RunHideTrayIcon("-a hide -d 0", ids);
@@ -146,7 +160,6 @@ class Program
                     {
                         _currentEntries = config.Rules.SelectMany(r => r.Entries).ToList();
                         _currentFilter = config.Filter;
-                        // Always update local files (including clearing them when empty)
                         var ruleLines = _currentEntries.Select(e =>
                             string.IsNullOrEmpty(e.Tooltip) ? e.ProcessName : $"{e.ProcessName}|{e.Tooltip}");
                         File.WriteAllText(RulesPath, string.Join("\n", ruleLines));
@@ -161,17 +174,14 @@ class Program
                 case MsgType.Restart:
                     SendAck(true, "Restarting...");
                     Log("Server requested restart.");
-                    // Give server time to process the ACK
                     Thread.Sleep(1000);
-                    // Close old connection first to avoid overlap
                     try { _writer?.Close(); _client?.Close(); } catch { }
-                    // Launch new instance
                     try
                     {
                         var psi = new ProcessStartInfo
                         {
                             FileName = "cmd.exe",
-                            Arguments = $"/c start \"\" \"{Environment.ProcessPath}\" --server {serverIp}",
+                            Arguments = $"/c start \"\" \"{Environment.ProcessPath}\" --server {serverIp} --logdir \"{LogDir}\"",
                             UseShellExecute = false,
                             CreateNoWindow = true,
                             WindowStyle = ProcessWindowStyle.Hidden
@@ -179,10 +189,7 @@ class Program
                         Process.Start(psi);
                         Log($"Restart launched: {Environment.ProcessPath} --server {serverIp}");
                     }
-                    catch (Exception ex)
-                    {
-                        Log($"Restart failed: {ex.Message}");
-                    }
+                    catch (Exception ex) { Log($"Restart failed: {ex.Message}"); }
                     Thread.Sleep(500);
                     _running = false;
                     Environment.Exit(0);
@@ -191,7 +198,7 @@ class Program
                 case MsgType.RestartExplorer:
                     RestartExplorer();
                     SendAck(true, "Explorer restarted");
-                    Log("Explorer restarted. Tray icons will reappear. Server controls re-hiding via cycle timer.");
+                    Log("Explorer restarted. Server controls re-hiding via cycle timer.");
                     break;
             }
         }
@@ -200,19 +207,6 @@ class Program
             Log($"HandleMessage error: {ex.Message}");
             SendMessage(new ProtocolMessage { Type = MsgType.Error, Payload = ex.Message });
         }
-    }
-
-    static void ApplyRules()
-    {
-        if (_currentEntries.Count == 0) return;
-
-        var identifiers = _currentEntries.Select(e => e.ProcessName)
-            .Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().ToList();
-        if (identifiers.Count == 0) return;
-
-        string ids = string.Join(" ", identifiers);
-        Log($"Auto-applying rules: {ids}");
-        RunHideTrayIcon("-a hide -d 0", ids);
     }
 
     static (bool ok, string output) RunHideTrayIcon(string actionArgs, string identifiers)
@@ -238,12 +232,11 @@ class Program
             using var proc = Process.Start(psi);
             if (proc == null) return (false, "Process.Start returned null");
 
-            // Read output with timeout - don't block forever
-            bool exited = proc.WaitForExit(8000); // 8 second max
+            bool exited = proc.WaitForExit(8000);
             if (!exited)
             {
                 try { proc.Kill(); } catch { }
-                Log($"hideTrayIcon.exe timed out after 8s, killed");
+                Log("hideTrayIcon.exe timed out after 8s, killed");
                 return (false, "Timeout");
             }
 
@@ -315,7 +308,7 @@ class Program
             if (!File.Exists(batPath))
             {
                 string exePath = Environment.ProcessPath ?? "";
-                File.WriteAllText(batPath, $"@echo off\r\nstart \"\" \"{exePath}\" --server 10.10.106.27\r\n");
+                File.WriteAllText(batPath, $"@echo off\r\nstart \"\" \"{exePath}\" --server {serverIp} --logdir \"{LogDir}\"\r\n");
                 Log($"Registered startup: {batPath}");
             }
         }
@@ -340,7 +333,6 @@ class Program
             Directory.CreateDirectory(LogDir);
             string ts = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             string line = $"[{ts}] {msg}";
-            Console.WriteLine(line);
             File.AppendAllText(Path.Combine(LogDir, $"client_{DateTime.Now:yyyyMMdd}.log"), line + Environment.NewLine);
         }
         catch { }
