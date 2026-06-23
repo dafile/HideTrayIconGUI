@@ -107,8 +107,13 @@ class Program
                     if (hideReq?.Identifiers != null && hideReq.Identifiers.Count > 0)
                     {
                         string ids = string.Join(" ", hideReq.Identifiers);
-                        var (ok, output) = RunHideTrayIcon("-a hide -d 0", ids);
-                        SendAck(ok, output);
+                        // Run async to not block message loop (hideTrayIcon.exe can hang)
+                        _ = Task.Run(() =>
+                        {
+                            var (ok, output) = RunHideTrayIcon("-a hide -d 0", ids);
+                            SendAck(ok, output);
+                            Log($"Hide result: ok={ok}");
+                        });
                     }
                     break;
 
@@ -117,8 +122,12 @@ class Program
                     if (showReq?.Identifiers != null && showReq.Identifiers.Count > 0)
                     {
                         string ids = string.Join(" ", showReq.Identifiers);
-                        var (ok, output) = RunHideTrayIcon("-a show -r", ids);
-                        SendAck(ok, output);
+                        _ = Task.Run(() =>
+                        {
+                            var (ok, output) = RunHideTrayIcon("-a show -r", ids);
+                            SendAck(ok, output);
+                            Log($"Show result: ok={ok}");
+                        });
                     }
                     break;
 
@@ -227,10 +236,20 @@ class Program
                 CreateNoWindow = true
             };
             using var proc = Process.Start(psi);
-            proc?.WaitForExit(10000);
-            string stdout = proc?.StandardOutput.ReadToEnd() ?? "";
-            string stderr = proc?.StandardError.ReadToEnd() ?? "";
-            return (proc?.ExitCode == 0, stdout + stderr);
+            if (proc == null) return (false, "Process.Start returned null");
+
+            // Read output with timeout - don't block forever
+            bool exited = proc.WaitForExit(8000); // 8 second max
+            if (!exited)
+            {
+                try { proc.Kill(); } catch { }
+                Log($"hideTrayIcon.exe timed out after 8s, killed");
+                return (false, "Timeout");
+            }
+
+            string stdout = proc.StandardOutput.ReadToEnd();
+            string stderr = proc.StandardError.ReadToEnd();
+            return (proc.ExitCode == 0, stdout + stderr);
         }
         catch (Exception ex)
         {
