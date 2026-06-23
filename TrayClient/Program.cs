@@ -305,12 +305,11 @@ class Program
         {
             string startupDir = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
             string batPath = Path.Combine(startupDir, "TrayClient.bat");
-            if (!File.Exists(batPath))
-            {
-                string exePath = Environment.ProcessPath ?? "";
-                File.WriteAllText(batPath, $"@echo off\r\nstart \"\" \"{exePath}\" --server {serverIp} --logdir \"{LogDir}\"\r\n");
-                Log($"Registered startup: {batPath}");
-            }
+            string exePath = Environment.ProcessPath ?? "";
+            // Always overwrite to keep args up to date; use /b for no window
+            File.WriteAllText(batPath,
+                $"@echo off\r\nstart /b \"\" \"{exePath}\" --server {serverIp} --logdir \"{LogDir}\"\r\n");
+            Log($"Registered startup: {batPath}");
         }
         catch (Exception ex) { Log($"Startup registration failed: {ex.Message}"); }
     }
