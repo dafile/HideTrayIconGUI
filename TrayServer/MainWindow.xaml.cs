@@ -155,25 +155,33 @@ public partial class MainWindow : Window
         if (depObj is DataGridRow row && row.DataContext is ClientItem item)
         {
             ClientGrid.SelectedItem = item;
+            e.Handled = true;
 
             // Build dynamic "Assign rule" submenu
-            var assignRuleItem = ((ContextMenu)FindResource("ClientMenu")).Items
+            var contextMenu = (ContextMenu)FindResource("ClientMenu");
+            var assignRuleItem = contextMenu.Items
                 .Cast<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "分配规则");
             if (assignRuleItem != null)
             {
                 assignRuleItem.Items.Clear();
-                foreach (var rule in _rules)
+                if (_rules.Count == 0)
                 {
-                    var mi = new MenuItem { Header = rule.Name, Tag = rule.Id };
-                    mi.Click += (s2, e2) => AssignRuleToClient(item, rule);
+                    var mi = new MenuItem { Header = "(无规则，请先创建)", IsEnabled = false };
                     assignRuleItem.Items.Add(mi);
+                }
+                else
+                {
+                    foreach (var rule in _rules)
+                    {
+                        var mi = new MenuItem { Header = rule.Name, Tag = rule.Id };
+                        mi.Click += (s2, e2) => AssignRuleToClient(item, rule);
+                        assignRuleItem.Items.Add(mi);
+                    }
                 }
             }
 
-            var menu = (ContextMenu)FindResource("ClientMenu");
-            menu.DataContext = item;
-            menu.IsOpen = true;
-            e.Handled = true;
+            contextMenu.DataContext = item;
+            contextMenu.IsOpen = true;
         }
     }
 

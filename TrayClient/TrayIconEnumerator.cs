@@ -38,14 +38,21 @@ public static class TrayIconEnumerator
         try
         {
             IntPtr mainToolbar = FindMainToolbar();
+            Program.Log($"MainToolbar: {mainToolbar}");
             if (mainToolbar != IntPtr.Zero)
                 result.AddRange(ReadToolbar(mainToolbar, "已显示"));
 
             IntPtr overflowToolbar = FindOverflowToolbar();
+            Program.Log($"OverflowToolbar: {overflowToolbar}");
             if (overflowToolbar != IntPtr.Zero)
                 result.AddRange(ReadToolbar(overflowToolbar, "已隐藏"));
+
+            Program.Log($"Enumerate done: {result.Count} icons");
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Program.Log($"Enumerate error: {ex.Message}");
+        }
         return result;
     }
 

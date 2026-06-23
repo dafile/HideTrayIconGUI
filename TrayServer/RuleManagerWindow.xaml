@@ -13,15 +13,21 @@
         </Grid.ColumnDefinitions>
 
         <!-- Left: Rule list -->
-        <DockPanel Grid.Column="0">
-            <TextBlock Text="规则列表" FontWeight="SemiBold" DockPanel.Dock="Top" Margin="0,0,0,6"/>
-            <ListBox x:Name="RuleList" SelectionChanged="RuleList_SelectionChanged"
-                     DockPanel.Dock="Top"/>
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="规则列表" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <ListBox Grid.Row="1" x:Name="RuleList" SelectionChanged="RuleList_SelectionChanged"/>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,0">
                 <Button Content="新建" Click="NewRule_Click" Width="55" Margin="0,0,6,0"/>
                 <Button Content="删除" Click="DeleteRule_Click" Width="55"/>
             </StackPanel>
-        </DockPanel>
+        </Grid>
 
         <!-- Right: Rule detail -->
         <Grid Grid.Column="1" Margin="10,0,0,0">

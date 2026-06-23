@@ -88,7 +88,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="已连接客户端" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <DataGrid Grid.Row="1" x:Name="ClientGrid" MouseRightButtonUp="ClientGrid_RightClick"
+            <DataGrid Grid.Row="1" x:Name="ClientGrid" PreviewMouseRightButtonDown="ClientGrid_RightClick"
                       RowEditEnding="ClientGrid_RowEditEnding" IsReadOnly="False">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="选" Width="35"
@@ -122,7 +122,7 @@
                 <TextBlock Text="客户端托盘图标" FontWeight="SemiBold" DockPanel.Dock="Left"/>
                 <Button Content="请求刷新" Click="RequestTrayIcons_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
-            <DataGrid Grid.Row="1" x:Name="TrayIconGrid" MouseRightButtonUp="TrayIconGrid_RightClick">
+            <DataGrid Grid.Row="1" x:Name="TrayIconGrid" PreviewMouseRightButtonDown="TrayIconGrid_RightClick">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="选" Width="35"
                                             Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
