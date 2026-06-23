@@ -229,11 +229,34 @@ public partial class MainWindow : Window
 
     private void AssignRule(ClientItem client, RuleInfo rule)
     {
+        string oldRuleName = client.RuleName;
         client.RuleName = rule.Name;
         SaveMeta();
-        var config = new ClientConfig { Rules = _rules, Filter = _filter };
-        _server.SendToClient(client.HostName, ProtocolMessage.Create(MsgType.UpdateRules, config));
-        Log("INFO", $"分配规则 [{rule.Name}] 到 {client.HostName}");
+
+        // First: restore icons from the old rule
+        if (!string.IsNullOrEmpty(oldRuleName))
+        {
+            var oldRule = _rules.FirstOrDefault(r => r.Name == oldRuleName);
+            if (oldRule != null && oldRule.Entries.Count > 0)
+            {
+                var oldIds = oldRule.Entries.Select(e => e.ProcessName).Distinct().ToList();
+                var showMsg = ProtocolMessage.Create(MsgType.Show, new HideRequest { Identifiers = oldIds });
+                _server.SendToClient(client.HostName, showMsg);
+                Log("INFO", $"切换规则: 恢复旧规则 [{oldRuleName}] 的 {oldIds.Count} 个图标");
+            }
+        }
+
+        // Then: push new rule
+        PushRulesToClient(client);
+
+        // And send hide command for new rule
+        if (rule.Entries.Count > 0)
+        {
+            var newIds = rule.Entries.Select(e => e.ProcessName).Distinct().ToList();
+            var hideMsg = ProtocolMessage.Create(MsgType.Hide, new HideRequest { Identifiers = newIds });
+            _server.SendToClient(client.HostName, hideMsg);
+            Log("INFO", $"切换规则: 隐藏新规则 [{rule.Name}] 的 {newIds.Count} 个图标");
+        }
     }
 
     private void AddIconToRule(TrayIconItem icon, RuleInfo rule)
@@ -300,11 +323,31 @@ public partial class MainWindow : Window
         var rule = _rules.FirstOrDefault(r => r.Name == dlg.SelectedRuleName);
         if (rule == null) return;
 
-        foreach (var c in selectedClients) c.RuleName = rule.Name;
-        SaveMeta();
+        foreach (var c in selectedClients)
+        {
+            // Restore old rule icons first
+            string oldRuleName = c.RuleName;
+            if (!string.IsNullOrEmpty(oldRuleName))
+            {
+                var oldRule = _rules.FirstOrDefault(r => r.Name == oldRuleName);
+                if (oldRule != null && oldRule.Entries.Count > 0)
+                {
+                    var oldIds = oldRule.Entries.Select(e => e.ProcessName).Distinct().ToList();
+                    _server.SendToClient(c.HostName, ProtocolMessage.Create(MsgType.Show, new HideRequest { Identifiers = oldIds }));
+                }
+            }
 
-        var config = new ClientConfig { Rules = _rules, Filter = _filter };
-        _server.SendToMany(selectedClients.Select(c => c.HostName), ProtocolMessage.Create(MsgType.UpdateRules, config));
+            c.RuleName = rule.Name;
+
+            // Push new rule and hide
+            PushRulesToClient(c);
+            if (rule.Entries.Count > 0)
+            {
+                var newIds = rule.Entries.Select(e => e.ProcessName).Distinct().ToList();
+                _server.SendToClient(c.HostName, ProtocolMessage.Create(MsgType.Hide, new HideRequest { Identifiers = newIds }));
+            }
+        }
+        SaveMeta();
         Log("INFO", $"批量分配规则 [{rule.Name}] 到 {selectedClients.Count} 台客户端");
     }
 
