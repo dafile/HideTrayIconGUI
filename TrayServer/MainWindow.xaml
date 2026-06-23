@@ -29,15 +29,6 @@
             <MenuItem Header="复制进程名" Click="CopyProcessName_Click"/>
             <MenuItem Header="复制提示文本" Click="CopyTooltip_Click"/>
         </ContextMenu>
-        <!-- Row style with context menu binding -->
-        <Style x:Key="ClientRowStyle" TargetType="DataGridRow">
-            <Setter Property="ContextMenu" Value="{StaticResource ClientMenu}"/>
-            <EventSetter Event="Loaded" Handler="ClientRow_Loaded"/>
-        </Style>
-        <Style x:Key="TrayIconRowStyle" TargetType="DataGridRow">
-            <Setter Property="ContextMenu" Value="{StaticResource TrayIconMenu}"/>
-            <EventSetter Event="Loaded" Handler="TrayIconRow_Loaded"/>
-        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -89,7 +80,7 @@
             <TextBlock Grid.Row="0" Text="已连接客户端" FontWeight="SemiBold" Margin="0,0,0,4"/>
             <DataGrid Grid.Row="1" x:Name="ClientGrid"
                       RowEditEnding="ClientGrid_RowEditEnding" IsReadOnly="False"
-                      RowStyle="{StaticResource ClientRowStyle}">
+                      ContextMenuOpening="ClientGrid_ContextMenuOpening">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="选" Width="35"
                                             Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -123,7 +114,7 @@
                 <Button Content="请求刷新" Click="RequestTrayIcons_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
             <DataGrid Grid.Row="1" x:Name="TrayIconGrid" IsReadOnly="True"
-                      RowStyle="{StaticResource TrayIconRowStyle}">
+                      ContextMenuOpening="TrayIconGrid_ContextMenuOpening">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="选" Width="35"
                                             Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

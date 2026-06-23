@@ -189,42 +189,78 @@ public partial class MainWindow : Window
         Log("INFO", $"清除 {client.HostName} 的规则");
     }
 
-    // ========== Context menu builders (via Row Loaded) ==========
+    // ========== Context menu (programmatic) ==========
 
-    private void ClientRow_Loaded(object sender, RoutedEventArgs e)
+    private void ClientGrid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
-        if (sender is not DataGridRow row || row.DataContext is not ClientItem item) return;
-        row.ContextMenu.DataContext = item;
-        var assignMenu = row.ContextMenu.Items.OfType<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "分配规则");
-        if (assignMenu == null) return;
-        assignMenu.Items.Clear();
+        if (ClientGrid.SelectedItem is not ClientItem item) { e.Handled = true; return; }
+        var menu = new System.Windows.Controls.ContextMenu();
+
+        var viewItem = new MenuItem { Header = "查看托盘图标" };
+        viewItem.Click += (s2, e2) => { _selectedClient = item.HostName; _trayIcons.Clear(); TrayIconTitle.Text = "客户端托盘图标 (请求中...)"; _server.SendToClient(item.HostName, new ProtocolMessage { Type = MsgType.GetTrayIcons }); };
+        menu.Items.Add(viewItem);
+        menu.Items.Add(new Separator());
+
+        var assignItem = new MenuItem { Header = "分配规则" };
         foreach (var rule in _rules)
         {
             var mi = new MenuItem { Header = rule.Name };
-            var capturedRule = rule;
-            mi.Click += (s2, e2) => AssignRuleToClient(item, capturedRule);
-            assignMenu.Items.Add(mi);
+            var captured = rule;
+            mi.Click += (s2, e2) => AssignRuleToClient(item, captured);
+            assignItem.Items.Add(mi);
         }
-        if (_rules.Count == 0)
-            assignMenu.Items.Add(new MenuItem { Header = "(无规则，请先创建)", IsEnabled = false });
+        if (_rules.Count == 0) assignItem.Items.Add(new MenuItem { Header = "(无规则)", IsEnabled = false });
+        menu.Items.Add(assignItem);
+        var clearItem = new MenuItem { Header = "清除规则" };
+        clearItem.Click += (s2, e2) => { item.RuleName = ""; SaveAssignmentsAndRemarks(); ClientGrid.Items.Refresh(); };
+        menu.Items.Add(clearItem);
+        menu.Items.Add(new Separator());
+
+        var restartItem = new MenuItem { Header = "重启客户端" };
+        restartItem.Click += (s2, e2) => { _server.SendToClient(item.HostName, new ProtocolMessage { Type = MsgType.Restart }); Log("INFO", $"重启 {item.HostName}"); };
+        menu.Items.Add(restartItem);
+        var explorerItem = new MenuItem { Header = "重启资源管理器" };
+        explorerItem.Click += (s2, e2) => { _server.SendToClient(item.HostName, new ProtocolMessage { Type = MsgType.RestartExplorer }); Log("INFO", $"重启资源管理器 {item.HostName}"); };
+        menu.Items.Add(explorerItem);
+        menu.Items.Add(new Separator());
+
+        var removeItem = new MenuItem { Header = "移除客户端" };
+        removeItem.Click += (s2, e2) => { _clients.Remove(item); SaveClients(); };
+        menu.Items.Add(removeItem);
+
+        ClientGrid.ContextMenu = menu;
     }
 
-    private void TrayIconRow_Loaded(object sender, RoutedEventArgs e)
+    private void TrayIconGrid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
-        if (sender is not DataGridRow row || row.DataContext is not TrayIconItem item) return;
-        row.ContextMenu.DataContext = item;
-        var addMenu = row.ContextMenu.Items.OfType<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "添加到规则");
-        if (addMenu == null) return;
-        addMenu.Items.Clear();
+        if (TrayIconGrid.SelectedItem is not TrayIconItem item) { e.Handled = true; return; }
+        var menu = new System.Windows.Controls.ContextMenu();
+
+        var hideItem = new MenuItem { Header = "隐藏此项" };
+        hideItem.Click += (s2, e2) => { if (_selectedClient != null) _server.SendToClient(_selectedClient, ProtocolMessage.Create(MsgType.Hide, new HideRequest { Identifiers = [item.ProcessName] })); };
+        menu.Items.Add(hideItem);
+        menu.Items.Add(new Separator());
+
+        var addItem = new MenuItem { Header = "添加到规则" };
         foreach (var rule in _rules)
         {
             var mi = new MenuItem { Header = rule.Name };
-            var capturedRule = rule;
-            mi.Click += (s2, e2) => AddIconToRule(item, capturedRule);
-            addMenu.Items.Add(mi);
+            var captured = rule;
+            mi.Click += (s2, e2) => AddIconToRule(item, captured);
+            addItem.Items.Add(mi);
         }
-        if (_rules.Count == 0)
-            addMenu.Items.Add(new MenuItem { Header = "(无规则)", IsEnabled = false });
+        if (_rules.Count == 0) addItem.Items.Add(new MenuItem { Header = "(无规则)", IsEnabled = false });
+        menu.Items.Add(addItem);
+        menu.Items.Add(new Separator());
+
+        var copyName = new MenuItem { Header = "复制进程名" };
+        copyName.Click += (s2, e2) => System.Windows.Clipboard.SetText(item.ProcessName);
+        menu.Items.Add(copyName);
+        var copyTip = new MenuItem { Header = "复制提示文本" };
+        copyTip.Click += (s2, e2) => System.Windows.Clipboard.SetText(item.Tooltip);
+        menu.Items.Add(copyTip);
+
+        TrayIconGrid.ContextMenu = menu;
     }
 
     private void AssignRuleToClient(ClientItem client, RuleInfo rule)
