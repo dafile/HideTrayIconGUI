@@ -245,8 +245,7 @@ public partial class MainWindow : Window
         }
         rule.Entries.Add(new RuleEntry { ProcessName = icon.ProcessName, Tooltip = icon.Tooltip });
         _persistence.SaveRules(_rules);
-        Log("INFO", $"已添加 {icon.ProcessName} 到规则 [{rule.Name}]");
-        PushRulesToAllClients();
+        Log("INFO", $"已添加 {icon.ProcessName} 到规则 [{rule.Name}]（仅保存，未推送到客户端）");
     }
 
     // ========== Toolbar ==========
@@ -351,9 +350,21 @@ public partial class MainWindow : Window
 
     private void PushRulesToAllClients()
     {
-        var config = new ClientConfig { Rules = _rules, Filter = _filter };
-        _server.SendToAll(ProtocolMessage.Create(MsgType.UpdateRules, config));
-        Log("INFO", $"推送规则到所有客户端: {_rules.Count} 条规则");
+        // Each client only receives its own assigned rule + global filter
+        foreach (var client in _clients.Where(c => c.Status == "在线"))
+        {
+            PushRulesToClient(client);
+        }
+        Log("INFO", $"推送规则到在线客户端");
+    }
+
+    private void PushRulesToClient(ClientItem client)
+    {
+        // Only send the rule assigned to this client, not all rules
+        var clientRule = _rules.FirstOrDefault(r => r.Name == client.RuleName);
+        var rulesForClient = clientRule != null ? new List<RuleInfo> { clientRule } : new List<RuleInfo>();
+        var config = new ClientConfig { Rules = rulesForClient, Filter = _filter };
+        _server.SendToClient(client.HostName, ProtocolMessage.Create(MsgType.UpdateRules, config));
     }
 
     // ========== Cycle timer ==========

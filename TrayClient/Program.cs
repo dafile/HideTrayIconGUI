@@ -40,6 +40,7 @@ class Program
         TryRegisterStartup();
         LoadLocalConfig();
         Log($"Client starting, hostname={HostName}, server={serverIp}:{port}");
+        Log($"Loaded {_currentEntries.Count} rule entries, {_currentFilter.Count} filters (will apply when server sends hide commands)");
 
         while (_running)
         {
@@ -137,14 +138,14 @@ class Program
                     {
                         _currentEntries = config.Rules.SelectMany(r => r.Entries).ToList();
                         _currentFilter = config.Filter;
-                        // Save to local files
+                        // Save to local files for persistence
                         var ruleLines = _currentEntries.Select(e =>
                             string.IsNullOrEmpty(e.Tooltip) ? e.ProcessName : $"{e.ProcessName}|{e.Tooltip}");
                         File.WriteAllText(RulesPath, string.Join("\n", ruleLines));
                         File.WriteAllText(FilterPath, string.Join("\n", _currentFilter));
                         Log($"Config updated: {config.Rules.Count} rules, {_currentEntries.Count} entries, {_currentFilter.Count} filters");
-                        ApplyRules();
-                        SendAck(true, $"Config applied: {_currentEntries.Count} entries");
+                        // Do NOT auto-apply here - server controls when to hide via cycle timer
+                        SendAck(true, $"Config received: {_currentEntries.Count} entries");
                     }
                     break;
 
