@@ -8,16 +8,11 @@
         Loaded="OnLoaded"
         Closing="OnClosing">
     <Window.Resources>
-        <ContextMenu x:Key="ClientMenu">
+        <!-- Client right-click menu -->
+        <ContextMenu x:Key="ClientMenu" x:Shared="False">
             <MenuItem Header="查看托盘图标" Click="ViewTrayIcons_Click"/>
             <Separator/>
-            <MenuItem x:Name="AssignRuleSubmenu" Header="分配规则">
-                <MenuItem.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel/>
-                    </ItemsPanelTemplate>
-                </MenuItem.ItemsPanel>
-            </MenuItem>
+            <MenuItem Header="分配规则" x:Name="AssignRuleMenu"/>
             <MenuItem Header="清除规则" Click="ClearRule_Click"/>
             <Separator/>
             <MenuItem Header="重启客户端" Click="RestartClient_Click"/>
@@ -25,20 +20,24 @@
             <Separator/>
             <MenuItem Header="移除客户端" Click="RemoveClient_Click"/>
         </ContextMenu>
-        <ContextMenu x:Key="TrayIconMenu">
+        <!-- Tray icon right-click menu -->
+        <ContextMenu x:Key="TrayIconMenu" x:Shared="False">
             <MenuItem Header="隐藏此项" Click="HideSingleIcon_Click"/>
             <Separator/>
-            <MenuItem x:Name="AddToRuleSubmenu" Header="添加到规则">
-                <MenuItem.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel/>
-                    </ItemsPanelTemplate>
-                </MenuItem.ItemsPanel>
-            </MenuItem>
+            <MenuItem Header="添加到规则" x:Name="AddToRuleMenu"/>
             <Separator/>
             <MenuItem Header="复制进程名" Click="CopyProcessName_Click"/>
             <MenuItem Header="复制提示文本" Click="CopyTooltip_Click"/>
         </ContextMenu>
+        <!-- Row style with context menu binding -->
+        <Style x:Key="ClientRowStyle" TargetType="DataGridRow">
+            <Setter Property="ContextMenu" Value="{StaticResource ClientMenu}"/>
+            <EventSetter Event="Loaded" Handler="ClientRow_Loaded"/>
+        </Style>
+        <Style x:Key="TrayIconRowStyle" TargetType="DataGridRow">
+            <Setter Property="ContextMenu" Value="{StaticResource TrayIconMenu}"/>
+            <EventSetter Event="Loaded" Handler="TrayIconRow_Loaded"/>
+        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -88,8 +87,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="已连接客户端" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <DataGrid Grid.Row="1" x:Name="ClientGrid" PreviewMouseRightButtonDown="ClientGrid_RightClick"
-                      RowEditEnding="ClientGrid_RowEditEnding" IsReadOnly="False">
+            <DataGrid Grid.Row="1" x:Name="ClientGrid"
+                      RowEditEnding="ClientGrid_RowEditEnding" IsReadOnly="False"
+                      RowStyle="{StaticResource ClientRowStyle}">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="选" Width="35"
                                             Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -100,14 +100,14 @@
                             </Style>
                         </DataGridCheckBoxColumn.ElementStyle>
                     </DataGridCheckBoxColumn>
-                    <DataGridTextColumn Header="主机名" Binding="{Binding HostName}" Width="*" MinWidth="80" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="规则" Binding="{Binding RuleName}" Width="80" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="备注" Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="80"/>
-                    <DataGridTextColumn Header="IP" Binding="{Binding IpAddress}" Width="110" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="50" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="连接时间" Binding="{Binding ConnectedAt, StringFormat='HH:mm:ss'}" Width="70" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="最后响应" Binding="{Binding LastSeen, StringFormat='HH:mm:ss'}" Width="70" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="图标数" Binding="{Binding IconCount}" Width="50" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="主机名" Binding="{Binding HostName}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="规则" Binding="{Binding RuleName}" Width="70" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="备注" Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="70"/>
+                    <DataGridTextColumn Header="IP" Binding="{Binding IpAddress}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="45" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="连接时间" Binding="{Binding ConnectedAt, StringFormat='HH:mm:ss'}" Width="65" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="最后响应" Binding="{Binding LastSeen, StringFormat='HH:mm:ss'}" Width="65" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="图标数" Binding="{Binding IconCount}" Width="45" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -119,10 +119,11 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <DockPanel Grid.Row="0">
-                <TextBlock Text="客户端托盘图标" FontWeight="SemiBold" DockPanel.Dock="Left"/>
+                <TextBlock x:Name="TrayIconTitle" Text="客户端托盘图标" FontWeight="SemiBold" DockPanel.Dock="Left"/>
                 <Button Content="请求刷新" Click="RequestTrayIcons_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
-            <DataGrid Grid.Row="1" x:Name="TrayIconGrid" PreviewMouseRightButtonDown="TrayIconGrid_RightClick">
+            <DataGrid Grid.Row="1" x:Name="TrayIconGrid" IsReadOnly="True"
+                      RowStyle="{StaticResource TrayIconRowStyle}">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="选" Width="35"
                                             Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -133,10 +134,10 @@
                             </Style>
                         </DataGridCheckBoxColumn.ElementStyle>
                     </DataGridCheckBoxColumn>
-                    <DataGridTextColumn Header="进程名" Binding="{Binding ProcessName}" Width="*" MinWidth="100" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="提示文本" Binding="{Binding Tooltip}" Width="2*" MinWidth="120" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="区域" Binding="{Binding Area}" Width="65" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="60" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="进程名" Binding="{Binding ProcessName}" Width="*" MinWidth="100"/>
+                    <DataGridTextColumn Header="提示文本" Binding="{Binding Tooltip}" Width="2*" MinWidth="120"/>
+                    <DataGridTextColumn Header="区域" Binding="{Binding Area}" Width="65"/>
+                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="60"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

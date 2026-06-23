@@ -19,17 +19,15 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<TrayIconItem> _trayIcons = new();
     private List<RuleInfo> _rules = [];
     private List<string> _filter = [];
-    private Dictionary<string, string> _assignments = new(); // hostname -> ruleName
-    private Dictionary<string, string> _remarks = new();     // hostname -> remark
+    private Dictionary<string, string> _assignments = new();
+    private Dictionary<string, string> _remarks = new();
     private string? _selectedClient;
 
     public MainWindow()
     {
         InitializeComponent();
-
         _refreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
         _refreshTimer.Tick += (s, e) => ClientGrid.Items.Refresh();
-
         _cycleTimer = new DispatcherTimer();
         _cycleTimer.Tick += (s, e) => CycleApply();
     }
@@ -44,7 +42,6 @@ public partial class MainWindow : Window
         _assignments = _persistence.LoadAssignments();
         _remarks = _persistence.LoadRemarks();
 
-        // Wire up server events
         _server.OnLog += (level, msg) => Dispatcher.Invoke(() => Log(level, msg));
         _server.OnClientConnected += id => Dispatcher.Invoke(() =>
         {
@@ -84,7 +81,6 @@ public partial class MainWindow : Window
             if (client != null)
             {
                 client.IconCount = icons.Count;
-                // Update IP from client registration if available
                 if (string.IsNullOrEmpty(client.IpAddress))
                 {
                     var info = _server.GetOnlineClients().FirstOrDefault(c => c.HostName == clientId);
@@ -102,23 +98,20 @@ public partial class MainWindow : Window
                         Area = icon.Area,
                         Status = icon.Status
                     });
+                TrayIconTitle.Text = $"客户端托盘图标 ({icons.Count} 个)";
             }
         });
 
         _server.Start();
         _refreshTimer.Start();
         UpdateServerStatus();
-        UpdateCycleInterval();
 
-        // Load persisted clients
         foreach (var c in _persistence.LoadClients())
         {
             if (_clients.Any(x => x.HostName == c.HostName)) continue;
             _clients.Add(new ClientItem
             {
-                HostName = c.HostName,
-                IpAddress = c.IpAddress,
-                Status = "离线",
+                HostName = c.HostName, IpAddress = c.IpAddress, Status = "离线",
                 ConnectedAt = c.ConnectedAt,
                 RuleName = _assignments.GetValueOrDefault(c.HostName, ""),
                 Remark = _remarks.GetValueOrDefault(c.HostName, ""),
@@ -128,89 +121,26 @@ public partial class MainWindow : Window
         Log("INFO", $"启动完成 | 规则: {_rules.Count} | 过滤: {_filter.Count} | 客户端: {_clients.Count}");
     }
 
-    // ========== Client management ==========
+    // ========== Client actions ==========
 
     private void RefreshClients_Click(object sender, RoutedEventArgs e)
     {
         foreach (var info in _server.GetOnlineClients())
         {
-            var existing = _clients.FirstOrDefault(c => c.HostName == info.HostName);
-            if (existing != null)
-            {
-                existing.Status = info.IsOnline ? "在线" : "离线";
-                existing.IpAddress = info.IpAddress;
-                existing.ConnectedAt = info.ConnectedAt;
-                existing.LastSeen = info.LastSeen;
-            }
+            var c = _clients.FirstOrDefault(x => x.HostName == info.HostName);
+            if (c != null) { c.Status = info.IsOnline ? "在线" : "离线"; c.IpAddress = info.IpAddress; c.LastSeen = info.LastSeen; }
         }
         UpdateServerStatus();
     }
 
-    private void ClientGrid_RightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-    {
-        var depObj = e.OriginalSource as DependencyObject;
-        while (depObj != null && depObj is not DataGridRow)
-            depObj = System.Windows.Media.VisualTreeHelper.GetParent(depObj);
-
-        if (depObj is DataGridRow row && row.DataContext is ClientItem item)
-        {
-            ClientGrid.SelectedItem = item;
-            e.Handled = true;
-
-            // Build dynamic "Assign rule" submenu
-            var contextMenu = (ContextMenu)FindResource("ClientMenu");
-            var assignRuleItem = contextMenu.Items
-                .Cast<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "分配规则");
-            if (assignRuleItem != null)
-            {
-                assignRuleItem.Items.Clear();
-                if (_rules.Count == 0)
-                {
-                    var mi = new MenuItem { Header = "(无规则，请先创建)", IsEnabled = false };
-                    assignRuleItem.Items.Add(mi);
-                }
-                else
-                {
-                    foreach (var rule in _rules)
-                    {
-                        var mi = new MenuItem { Header = rule.Name, Tag = rule.Id };
-                        mi.Click += (s2, e2) => AssignRuleToClient(item, rule);
-                        assignRuleItem.Items.Add(mi);
-                    }
-                }
-            }
-
-            contextMenu.DataContext = item;
-            contextMenu.IsOpen = true;
-        }
-    }
-
-    private void AssignRuleToClient(ClientItem client, RuleInfo rule)
-    {
-        client.RuleName = rule.Name;
-        SaveAssignmentsAndRemarks();
-        ClientGrid.Items.Refresh();
-
-        // Push rules to this client
-        var config = new ClientConfig { Rules = _rules, Filter = _filter };
-        _server.SendToClient(client.HostName, ProtocolMessage.Create(MsgType.UpdateRules, config));
-        Log("INFO", $"分配规则 [{rule.Name}] 到 {client.HostName}");
-    }
-
-    private void ClearRule_Click(object sender, RoutedEventArgs e)
-    {
-        if (ClientGrid.SelectedItem is not ClientItem client) return;
-        client.RuleName = "";
-        SaveAssignmentsAndRemarks();
-        ClientGrid.Items.Refresh();
-        Log("INFO", $"清除 {client.HostName} 的规则");
-    }
-
     private void ViewTrayIcons_Click(object sender, RoutedEventArgs e)
     {
-        if (ClientGrid.SelectedItem is not ClientItem client) return;
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is not ClientItem client) return;
         _selectedClient = client.HostName;
         _trayIcons.Clear();
+        TrayIconTitle.Text = $"客户端托盘图标 (请求中...)";
         Log("INFO", $"请求 {client.HostName} 的托盘图标");
         _server.SendToClient(client.HostName, new ProtocolMessage { Type = MsgType.GetTrayIcons });
     }
@@ -223,45 +153,109 @@ public partial class MainWindow : Window
 
     private void RestartClient_Click(object sender, RoutedEventArgs e)
     {
-        if (ClientGrid.SelectedItem is not ClientItem client) return;
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is not ClientItem client) return;
         _server.SendToClient(client.HostName, new ProtocolMessage { Type = MsgType.Restart });
         Log("INFO", $"发送重启命令到 {client.HostName}");
     }
 
     private void RestartExplorer_Click(object sender, RoutedEventArgs e)
     {
-        if (ClientGrid.SelectedItem is not ClientItem client) return;
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is not ClientItem client) return;
         _server.SendToClient(client.HostName, new ProtocolMessage { Type = MsgType.RestartExplorer });
         Log("INFO", $"发送重启资源管理器到 {client.HostName}");
     }
 
     private void RemoveClient_Click(object sender, RoutedEventArgs e)
     {
-        if (ClientGrid.SelectedItem is not ClientItem client) return;
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is not ClientItem client) return;
         _clients.Remove(client);
         SaveClients();
     }
 
-    private void ClientGrid_RowEditEnding(object? sender, DataGridRowEditEndingEventArgs e)
+    private void ClearRule_Click(object sender, RoutedEventArgs e)
     {
-        // Auto-save remarks when user finishes editing a row
-        Dispatcher.BeginInvoke(() =>
-        {
-            SaveAssignmentsAndRemarks();
-            Log("INFO", "备注已自动保存");
-        });
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is not ClientItem client) return;
+        client.RuleName = "";
+        SaveAssignmentsAndRemarks();
+        ClientGrid.Items.Refresh();
+        Log("INFO", $"清除 {client.HostName} 的规则");
     }
 
-    // ========== Top toolbar actions ==========
+    // ========== Context menu builders (via Row Loaded) ==========
+
+    private void ClientRow_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is not DataGridRow row || row.DataContext is not ClientItem item) return;
+        row.ContextMenu.DataContext = item;
+        var assignMenu = row.ContextMenu.Items.OfType<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "分配规则");
+        if (assignMenu == null) return;
+        assignMenu.Items.Clear();
+        foreach (var rule in _rules)
+        {
+            var mi = new MenuItem { Header = rule.Name };
+            var capturedRule = rule;
+            mi.Click += (s2, e2) => AssignRuleToClient(item, capturedRule);
+            assignMenu.Items.Add(mi);
+        }
+        if (_rules.Count == 0)
+            assignMenu.Items.Add(new MenuItem { Header = "(无规则，请先创建)", IsEnabled = false });
+    }
+
+    private void TrayIconRow_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is not DataGridRow row || row.DataContext is not TrayIconItem item) return;
+        row.ContextMenu.DataContext = item;
+        var addMenu = row.ContextMenu.Items.OfType<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "添加到规则");
+        if (addMenu == null) return;
+        addMenu.Items.Clear();
+        foreach (var rule in _rules)
+        {
+            var mi = new MenuItem { Header = rule.Name };
+            var capturedRule = rule;
+            mi.Click += (s2, e2) => AddIconToRule(item, capturedRule);
+            addMenu.Items.Add(mi);
+        }
+        if (_rules.Count == 0)
+            addMenu.Items.Add(new MenuItem { Header = "(无规则)", IsEnabled = false });
+    }
+
+    private void AssignRuleToClient(ClientItem client, RuleInfo rule)
+    {
+        client.RuleName = rule.Name;
+        SaveAssignmentsAndRemarks();
+        ClientGrid.Items.Refresh();
+        var config = new ClientConfig { Rules = _rules, Filter = _filter };
+        _server.SendToClient(client.HostName, ProtocolMessage.Create(MsgType.UpdateRules, config));
+        Log("INFO", $"分配规则 [{rule.Name}] 到 {client.HostName}");
+    }
+
+    private void AddIconToRule(TrayIconItem icon, RuleInfo rule)
+    {
+        if (rule.Entries.Any(x => x.ProcessName.Equals(icon.ProcessName, StringComparison.OrdinalIgnoreCase)))
+        {
+            Log("INFO", $"{icon.ProcessName} 已在规则 [{rule.Name}] 中");
+            return;
+        }
+        rule.Entries.Add(new RuleEntry { ProcessName = icon.ProcessName, Tooltip = icon.Tooltip });
+        _persistence.SaveRules(_rules);
+        Log("INFO", $"已添加 {icon.ProcessName} 到规则 [{rule.Name}]");
+        PushRulesToAllClients();
+    }
+
+    // ========== Toolbar actions ==========
 
     private void RestartExplorerSelected_Click(object sender, RoutedEventArgs e)
     {
         var selected = _clients.Where(c => c.IsSelected).ToList();
-        if (selected.Count == 0)
-        {
-            Log("WARN", "请先勾选客户端");
-            return;
-        }
+        if (selected.Count == 0) { Log("WARN", "请先勾选客户端"); return; }
         foreach (var c in selected)
             _server.SendToClient(c.HostName, new ProtocolMessage { Type = MsgType.RestartExplorer });
         Log("INFO", $"发送重启资源管理器到 {selected.Count} 台客户端");
@@ -273,53 +267,39 @@ public partial class MainWindow : Window
         if (selectedClients.Count == 0) { Log("WARN", "请先勾选客户端"); return; }
         var selectedIcons = _trayIcons.Where(i => i.IsSelected).ToList();
         if (selectedIcons.Count == 0) { Log("WARN", "请先勾选托盘图标"); return; }
-
         var ids = selectedIcons.Select(i => i.ProcessName).Distinct().ToList();
         var msg = ProtocolMessage.Create(MsgType.Hide, new HideRequest { Identifiers = ids });
         _server.SendToMany(selectedClients.Select(c => c.HostName), msg);
         Log("INFO", $"批量隐藏 {selectedClients.Count} 台客户端: {string.Join(", ", ids)}");
     }
 
-    private void ApplyAllRules_Click(object sender, RoutedEventArgs e)
-    {
-        PushRulesToAllClients();
-    }
-
     private void BatchApplyRules_Click(object sender, RoutedEventArgs e)
     {
         var selectedClients = _clients.Where(c => c.IsSelected).ToList();
         if (selectedClients.Count == 0) { Log("WARN", "请先勾选客户端"); return; }
-        if (_rules.Count == 0) { Log("WARN", "没有可用规则，请先在规则设置中创建"); return; }
+        if (_rules.Count == 0) { Log("WARN", "没有可用规则"); return; }
 
-        // Show rule selection dialog
-        var ruleNames = _rules.Select(r => r.Name).ToList();
-        var dlg = new RuleSelectDialog(ruleNames) { Owner = this };
+        var dlg = new RuleSelectDialog(_rules.Select(r => r.Name).ToList()) { Owner = this };
         dlg.ShowDialog();
-
         if (!dlg.Saved || dlg.SelectedRuleName == null) return;
 
         var rule = _rules.FirstOrDefault(r => r.Name == dlg.SelectedRuleName);
         if (rule == null) return;
 
-        // Assign rule to selected clients
-        foreach (var client in selectedClients)
-        {
-            client.RuleName = rule.Name;
-        }
+        foreach (var c in selectedClients) c.RuleName = rule.Name;
         SaveAssignmentsAndRemarks();
 
-        // Push rules to those clients
         var config = new ClientConfig { Rules = _rules, Filter = _filter };
-        var msg = ProtocolMessage.Create(MsgType.UpdateRules, config);
-        _server.SendToMany(selectedClients.Select(c => c.HostName), msg);
-
+        _server.SendToMany(selectedClients.Select(c => c.HostName), ProtocolMessage.Create(MsgType.UpdateRules, config));
         Log("INFO", $"批量分配规则 [{rule.Name}] 到 {selectedClients.Count} 台客户端");
         ClientGrid.Items.Refresh();
     }
 
     private void HideSingleIcon_Click(object sender, RoutedEventArgs e)
     {
-        if (TrayIconGrid.SelectedItem is not TrayIconItem icon || _selectedClient == null) return;
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is not TrayIconItem icon || _selectedClient == null) return;
         var msg = ProtocolMessage.Create(MsgType.Hide, new HideRequest { Identifiers = [icon.ProcessName] });
         _server.SendToClient(_selectedClient, msg);
         Log("INFO", $"隐藏 {_selectedClient}: {icon.ProcessName}");
@@ -327,85 +307,33 @@ public partial class MainWindow : Window
 
     private void CopyProcessName_Click(object sender, RoutedEventArgs e)
     {
-        if (TrayIconGrid.SelectedItem is TrayIconItem icon)
-            System.Windows.Clipboard.SetText(icon.ProcessName);
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is TrayIconItem icon) System.Windows.Clipboard.SetText(icon.ProcessName);
     }
 
     private void CopyTooltip_Click(object sender, RoutedEventArgs e)
     {
-        if (TrayIconGrid.SelectedItem is TrayIconItem icon)
-            System.Windows.Clipboard.SetText(icon.Tooltip);
+        var mi = (MenuItem)sender;
+        var cm = (ContextMenu)mi.Parent;
+        if (cm.DataContext is TrayIconItem icon) System.Windows.Clipboard.SetText(icon.Tooltip);
     }
 
-    // ========== Tray icon right-click -> Add to rule ==========
-
-    private void TrayIconGrid_RightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-    {
-        var depObj = e.OriginalSource as DependencyObject;
-        while (depObj != null && depObj is not DataGridRow)
-            depObj = System.Windows.Media.VisualTreeHelper.GetParent(depObj);
-
-        if (depObj is DataGridRow row && row.DataContext is TrayIconItem item)
-        {
-            TrayIconGrid.SelectedItem = item;
-
-            // Build dynamic "Add to rule" submenu
-            var addToRuleItem = (MenuItem)((ContextMenu)FindResource("TrayIconMenu")).Items
-                .Cast<MenuItem>().First(m => m.Header.ToString() == "添加到规则");
-            addToRuleItem.Items.Clear();
-            foreach (var rule in _rules)
-            {
-                var mi = new MenuItem { Header = rule.Name, Tag = rule.Id };
-                mi.Click += (s2, e2) => AddIconToRule(item, rule);
-                addToRuleItem.Items.Add(mi);
-            }
-
-            var menu = (ContextMenu)FindResource("TrayIconMenu");
-            menu.DataContext = item;
-            menu.IsOpen = true;
-            e.Handled = true;
-        }
-    }
-
-    private void AddIconToRule(TrayIconItem icon, RuleInfo rule)
-    {
-        if (rule.Entries.Any(e => e.ProcessName.Equals(icon.ProcessName, StringComparison.OrdinalIgnoreCase)))
-        {
-            Log("INFO", $"{icon.ProcessName} 已在规则 [{rule.Name}] 中");
-            return;
-        }
-        rule.Entries.Add(new RuleEntry
-        {
-            ProcessName = icon.ProcessName,
-            Tooltip = icon.Tooltip
-        });
-        _persistence.SaveRules(_rules);
-        Log("INFO", $"已添加 {icon.ProcessName} 到规则 [{rule.Name}]");
-        PushRulesToAllClients();
-    }
-
-    // ========== Rules ==========
+    // ========== Rules & Settings ==========
 
     private void RulesSettings_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new RuleManagerWindow(_rules)
         {
             Owner = this,
-            OnRulesChanged = () =>
-            {
-                _persistence.SaveRules(_rules);
-                PushRulesToAllClients();
-                // Refresh client list to show updated rule names
-                ClientGrid.Items.Refresh();
-            }
+            OnRulesChanged = () => { _persistence.SaveRules(_rules); PushRulesToAllClients(); ClientGrid.Items.Refresh(); }
         };
         dlg.ShowDialog();
     }
 
     private void FilterSettings_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new InputDialog("过滤设置", "每行一条进程名，不显示在客户端列表中", string.Join("\n", _filter))
-        { Owner = this };
+        var dlg = new InputDialog("过滤设置", "每行一条进程名", string.Join("\n", _filter)) { Owner = this };
         dlg.ShowDialog();
         if (dlg.Saved)
         {
@@ -422,22 +350,13 @@ public partial class MainWindow : Window
         Log("INFO", $"推送规则到所有客户端: {_rules.Count} 条规则");
     }
 
-    private void PushRulesToClient(string hostname)
-    {
-        var config = new ClientConfig { Rules = _rules, Filter = _filter };
-        _server.SendToClient(hostname, ProtocolMessage.Create(MsgType.UpdateRules, config));
-    }
-
     // ========== Cycle timer ==========
 
-    private void CycleEnabled_Changed(object sender, RoutedEventArgs e)
-    {
-        UpdateCycleInterval();
-    }
+    private void CycleEnabled_Changed(object sender, RoutedEventArgs e) => UpdateCycleInterval();
 
     private void CycleInterval_Changed(object sender, SelectionChangedEventArgs e)
     {
-        if (CustomCycleBox == null || CycleIntervalCombo == null) return; // Guard: may fire during init
+        if (CustomCycleBox == null || CycleIntervalCombo == null) return;
         string selected = (CycleIntervalCombo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
         CustomCycleBox.Visibility = selected == "自定义" ? Visibility.Visible : Visibility.Collapsed;
         UpdateCycleInterval();
@@ -447,7 +366,6 @@ public partial class MainWindow : Window
     {
         _cycleTimer.Stop();
         if (CycleEnabledCheck.IsChecked != true) return;
-
         int seconds = GetCycleSeconds();
         _cycleTimer.Interval = TimeSpan.FromSeconds(seconds);
         _cycleTimer.Start();
@@ -459,11 +377,7 @@ public partial class MainWindow : Window
         string selected = (CycleIntervalCombo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "10秒";
         return selected switch
         {
-            "1秒" => 1,
-            "2秒" => 2,
-            "3秒" => 3,
-            "5秒" => 5,
-            "10秒" => 10,
+            "1秒" => 1, "2秒" => 2, "3秒" => 3, "5秒" => 5, "10秒" => 10,
             "自定义" => int.TryParse(CustomCycleBox.Text, out int v) && v > 0 ? v : 10,
             _ => 10
         };
@@ -471,21 +385,19 @@ public partial class MainWindow : Window
 
     private void CycleApply()
     {
-        var onlineClients = _clients.Where(c => c.Status == "在线").ToList();
-        if (onlineClients.Count == 0) return;
-
-        foreach (var client in onlineClients)
+        foreach (var client in _clients.Where(c => c.Status == "在线"))
         {
-            string ruleName = client.RuleName;
-            if (string.IsNullOrEmpty(ruleName)) continue;
-
-            var rule = _rules.FirstOrDefault(r => r.Name == ruleName);
+            if (string.IsNullOrEmpty(client.RuleName)) continue;
+            var rule = _rules.FirstOrDefault(r => r.Name == client.RuleName);
             if (rule == null || rule.Entries.Count == 0) continue;
-
             var ids = rule.Entries.Select(e => e.ProcessName).Distinct().ToList();
-            var msg = ProtocolMessage.Create(MsgType.Hide, new HideRequest { Identifiers = ids });
-            _server.SendToClient(client.HostName, msg);
+            _server.SendToClient(client.HostName, ProtocolMessage.Create(MsgType.Hide, new HideRequest { Identifiers = ids }));
         }
+    }
+
+    private void ClientGrid_RowEditEnding(object? sender, DataGridRowEditEndingEventArgs e)
+    {
+        Dispatcher.BeginInvoke(() => { SaveAssignmentsAndRemarks(); Log("INFO", "备注已自动保存"); });
     }
 
     // ========== Helpers ==========
@@ -493,28 +405,19 @@ public partial class MainWindow : Window
     private void UpdateServerStatus()
     {
         int online = _clients.Count(c => c.Status == "在线");
-        int total = _clients.Count;
-        ServerStatus.Text = $"客户端: {online} 在线 / {total} 总计 | 端口: 9527";
+        ServerStatus.Text = $"客户端: {online} 在线 / {_clients.Count} 总计 | 端口: 9527";
     }
 
     private void SaveClients()
     {
-        var infos = _clients.Select(c => new ClientInfo
-        {
-            HostName = c.HostName,
-            IpAddress = c.IpAddress,
-            ConnectedAt = c.ConnectedAt,
-            LastSeen = c.LastSeen
-        }).ToList();
-        _persistence.SaveClients(infos);
+        _persistence.SaveClients(_clients.Select(c => new ClientInfo
+        { HostName = c.HostName, IpAddress = c.IpAddress, ConnectedAt = c.ConnectedAt, LastSeen = c.LastSeen }).ToList());
     }
 
     private void SaveAssignmentsAndRemarks()
     {
-        _assignments = _clients.Where(c => !string.IsNullOrEmpty(c.RuleName))
-            .ToDictionary(c => c.HostName, c => c.RuleName);
-        _remarks = _clients.Where(c => !string.IsNullOrEmpty(c.Remark))
-            .ToDictionary(c => c.HostName, c => c.Remark);
+        _assignments = _clients.Where(c => !string.IsNullOrEmpty(c.RuleName)).ToDictionary(c => c.HostName, c => c.RuleName);
+        _remarks = _clients.Where(c => !string.IsNullOrEmpty(c.Remark)).ToDictionary(c => c.HostName, c => c.Remark);
         _persistence.SaveAssignments(_assignments);
         _persistence.SaveRemarks(_remarks);
     }
@@ -524,11 +427,7 @@ public partial class MainWindow : Window
         try
         {
             string ts = DateTime.Now.ToString("HH:mm:ss.fff");
-            if (LogBox != null)
-            {
-                LogBox.AppendText($"[{ts}] [{level}] {msg}\n");
-                LogBox.ScrollToEnd();
-            }
+            if (LogBox != null) { LogBox.AppendText($"[{ts}] [{level}] {msg}\n"); LogBox.ScrollToEnd(); }
             string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
             Directory.CreateDirectory(logDir);
             File.AppendAllText(Path.Combine(logDir, $"server_{DateTime.Now:yyyyMMdd}.log"),
@@ -539,11 +438,8 @@ public partial class MainWindow : Window
 
     private void OnClosing(object? sender, CancelEventArgs e)
     {
-        SaveClients();
-        SaveAssignmentsAndRemarks();
-        _server.Dispose();
-        _cycleTimer.Stop();
-        _refreshTimer.Stop();
+        SaveClients(); SaveAssignmentsAndRemarks();
+        _server.Dispose(); _cycleTimer.Stop(); _refreshTimer.Stop();
     }
 }
 
