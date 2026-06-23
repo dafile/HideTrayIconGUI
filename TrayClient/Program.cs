@@ -181,6 +181,17 @@ class Program
                 case MsgType.RestartExplorer:
                     RestartExplorer();
                     SendAck(true, "Explorer restarted");
+                    // Re-apply rules in background (don't block message loop)
+                    _ = Task.Run(async () =>
+                    {
+                        Log("Explorer restarted, waiting 5s then re-applying rules...");
+                        await Task.Delay(5000);
+                        ApplyRules();
+                        Log("Rules re-applied (pass 1)");
+                        await Task.Delay(5000);
+                        ApplyRules();
+                        Log("Rules re-applied (pass 2)");
+                    });
                     break;
             }
         }
