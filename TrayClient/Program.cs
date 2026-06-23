@@ -132,19 +132,19 @@ class Program
                     break;
 
                 case MsgType.UpdateRules:
-                    // New format: ClientConfig with Rules + Filter
                     var config = msg.DeserializePayload<ClientConfig>();
                     if (config != null)
                     {
                         _currentEntries = config.Rules.SelectMany(r => r.Entries).ToList();
                         _currentFilter = config.Filter;
-                        // Save to local files for persistence
+                        // Always update local files (including clearing them when empty)
                         var ruleLines = _currentEntries.Select(e =>
                             string.IsNullOrEmpty(e.Tooltip) ? e.ProcessName : $"{e.ProcessName}|{e.Tooltip}");
                         File.WriteAllText(RulesPath, string.Join("\n", ruleLines));
                         File.WriteAllText(FilterPath, string.Join("\n", _currentFilter));
                         Log($"Config updated: {config.Rules.Count} rules, {_currentEntries.Count} entries, {_currentFilter.Count} filters");
-                        // Do NOT auto-apply here - server controls when to hide via cycle timer
+                        if (_currentEntries.Count == 0)
+                            Log("Rules cleared - no auto-hide will occur");
                         SendAck(true, $"Config received: {_currentEntries.Count} entries");
                     }
                     break;

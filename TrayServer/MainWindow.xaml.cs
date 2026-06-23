@@ -350,6 +350,15 @@ public partial class MainWindow : Window
 
     private void PushRulesToAllClients()
     {
+        if (_rules.Count == 0)
+        {
+            // Rules cleared - push empty config to all clients to clear their local rules
+            var emptyConfig = new ClientConfig { Rules = [], Filter = _filter };
+            _server.SendToAll(ProtocolMessage.Create(MsgType.UpdateRules, emptyConfig));
+            Log("INFO", "规则已清空,推送到所有客户端清除本地规则");
+            return;
+        }
+
         // Each client only receives its own assigned rule + global filter
         foreach (var client in _clients.Where(c => c.Status == "在线"))
         {
