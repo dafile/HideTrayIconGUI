@@ -151,8 +151,11 @@ class Program
                 case MsgType.Restart:
                     SendAck(true, "Restarting...");
                     Log("Server requested restart.");
-                    Thread.Sleep(500);
-                    // Launch new instance detached via cmd start
+                    // Give server time to process the ACK
+                    Thread.Sleep(1000);
+                    // Close old connection first to avoid overlap
+                    try { _writer?.Close(); _client?.Close(); } catch { }
+                    // Launch new instance
                     try
                     {
                         var psi = new ProcessStartInfo
@@ -170,7 +173,7 @@ class Program
                     {
                         Log($"Restart failed: {ex.Message}");
                     }
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     _running = false;
                     Environment.Exit(0);
                     break;

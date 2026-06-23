@@ -132,7 +132,9 @@ public class ServerService : IDisposable
         {
             if (!string.IsNullOrEmpty(clientId))
             {
-                _clients.TryRemove(clientId, out _);
+                // Don't remove - just mark offline. Entry stays for reconnect.
+                if (_clients.TryGetValue(clientId, out var existingConn) && existingConn.Info != null)
+                    existingConn.Info.LastSeen = DateTime.MinValue;
                 OnClientDisconnected?.Invoke(clientId);
                 Log("INFO", $"Client disconnected: {clientId}");
             }

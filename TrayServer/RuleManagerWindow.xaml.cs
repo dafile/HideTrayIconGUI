@@ -9,9 +9,12 @@ public partial class RuleManagerWindow : Window
 {
     private readonly List<RuleInfo> _rules;
     private RuleInfo? _currentRule;
+    private string _currentRuleOldName = "";
     private readonly ObservableCollection<RuleEntry> _entries = new();
 
     public Action? OnRulesChanged { get; set; }
+    /// <summary>Called when a rule is renamed: (oldName, newName)</summary>
+    public Action<string, string>? OnRuleRenamed { get; set; }
 
     public RuleManagerWindow(List<RuleInfo> rules)
     {
@@ -39,6 +42,7 @@ public partial class RuleManagerWindow : Window
         if (RuleList.SelectedIndex >= 0 && RuleList.SelectedIndex < _rules.Count)
         {
             _currentRule = _rules[RuleList.SelectedIndex];
+            _currentRuleOldName = _currentRule.Name; // Track original name
             RuleNameBox.Text = _currentRule.Name;
             _entries.Clear();
             foreach (var entry in _currentRule.Entries)
@@ -67,7 +71,7 @@ public partial class RuleManagerWindow : Window
 
     private void AddEntry_Click(object sender, RoutedEventArgs e)
     {
-        if (_currentRule == null) { return; }
+        if (_currentRule == null) return;
         string proc = EntryProcessBox.Text.Trim();
         if (string.IsNullOrEmpty(proc)) return;
 
@@ -93,9 +97,23 @@ public partial class RuleManagerWindow : Window
     {
         if (_currentRule != null)
         {
-            _currentRule.Name = RuleNameBox.Text.Trim();
-            if (string.IsNullOrEmpty(_currentRule.Name))
-                _currentRule.Name = "未命名规则";
+            string newName = RuleNameBox.Text.Trim();
+            if (string.IsNullOrEmpty(newName))
+                newName = "未命名规则";
+
+            // Detect rename
+            string oldName = _currentRuleOldName;
+            if (!string.IsNullOrEmpty(oldName) && !oldName.Equals(newName, StringComparison.OrdinalIgnoreCase))
+            {
+                _currentRule.Name = newName;
+                OnRuleRenamed?.Invoke(oldName, newName);
+                _currentRuleOldName = newName; // Update tracked name
+            }
+            else
+            {
+                _currentRule.Name = newName;
+            }
+
             RefreshRuleList();
         }
         OnRulesChanged?.Invoke();

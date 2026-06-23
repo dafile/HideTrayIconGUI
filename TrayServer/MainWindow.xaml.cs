@@ -321,7 +321,18 @@ public partial class MainWindow : Window
         var dlg = new RuleManagerWindow(_rules)
         {
             Owner = this,
-            OnRulesChanged = () => { _persistence.SaveRules(_rules); PushRulesToAllClients(); }
+            OnRulesChanged = () => { _persistence.SaveRules(_rules); PushRulesToAllClients(); },
+            OnRuleRenamed = (oldName, newName) =>
+            {
+                // Update all clients referencing the old rule name
+                foreach (var client in _clients.Where(c => c.RuleName == oldName))
+                {
+                    client.RuleName = newName;
+                }
+                SaveMeta();
+                Log("INFO", $"规则重命名: {oldName} -> {newName}, 已同步更新客户端绑定");
+                PushRulesToAllClients();
+            }
         };
         dlg.ShowDialog();
     }
