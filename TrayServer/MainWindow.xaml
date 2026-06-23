@@ -7,29 +7,6 @@
         Background="#F5F5F5"
         Loaded="OnLoaded"
         Closing="OnClosing">
-    <Window.Resources>
-        <!-- Client right-click menu -->
-        <ContextMenu x:Key="ClientMenu" x:Shared="False">
-            <MenuItem Header="查看托盘图标" Click="ViewTrayIcons_Click"/>
-            <Separator/>
-            <MenuItem Header="分配规则" x:Name="AssignRuleMenu"/>
-            <MenuItem Header="清除规则" Click="ClearRule_Click"/>
-            <Separator/>
-            <MenuItem Header="重启客户端" Click="RestartClient_Click"/>
-            <MenuItem Header="重启资源管理器" Click="RestartExplorer_Click"/>
-            <Separator/>
-            <MenuItem Header="移除客户端" Click="RemoveClient_Click"/>
-        </ContextMenu>
-        <!-- Tray icon right-click menu -->
-        <ContextMenu x:Key="TrayIconMenu" x:Shared="False">
-            <MenuItem Header="隐藏此项" Click="HideSingleIcon_Click"/>
-            <Separator/>
-            <MenuItem Header="添加到规则" x:Name="AddToRuleMenu"/>
-            <Separator/>
-            <MenuItem Header="复制进程名" Click="CopyProcessName_Click"/>
-            <MenuItem Header="复制提示文本" Click="CopyTooltip_Click"/>
-        </ContextMenu>
-    </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -78,32 +55,42 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="已连接客户端" FontWeight="SemiBold" Margin="0,0,0,4"/>
-            <DataGrid Grid.Row="1" x:Name="ClientGrid"
-                      RowEditEnding="ClientGrid_RowEditEnding" IsReadOnly="False"
-                      ContextMenuOpening="ClientGrid_ContextMenuOpening">
-                <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="选" Width="35"
-                                            Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <DataGridCheckBoxColumn.ElementStyle>
-                            <Style TargetType="CheckBox">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridCheckBoxColumn.ElementStyle>
-                    </DataGridCheckBoxColumn>
-                    <DataGridTextColumn Header="主机名" Binding="{Binding HostName}" Width="90" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="规则" Binding="{Binding RuleName}" Width="70" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="备注" Binding="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="70"/>
-                    <DataGridTextColumn Header="IP" Binding="{Binding IpAddress}" Width="100" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="45" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="连接时间" Binding="{Binding ConnectedAt, StringFormat='HH:mm:ss'}" Width="65" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="最后响应" Binding="{Binding LastSeen, StringFormat='HH:mm:ss'}" Width="65" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="图标数" Binding="{Binding IconCount}" Width="45" IsReadOnly="True"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <ListView Grid.Row="1" x:Name="ClientList" SelectionMode="Single"
+                      MouseDoubleClick="ClientList_DoubleClick">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="35">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="选"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="主机名" Width="90" DisplayMemberBinding="{Binding HostName}"/>
+                        <GridViewColumn Header="规则" Width="70" DisplayMemberBinding="{Binding RuleName}"/>
+                        <GridViewColumn Header="备注" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding Remark, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                             BorderThickness="0" Padding="2,1"
+                                             LostFocus="Remark_LostFocus"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="IP" Width="110" DisplayMemberBinding="{Binding IpAddress}"/>
+                        <GridViewColumn Header="状态" Width="45" DisplayMemberBinding="{Binding Status}"/>
+                        <GridViewColumn Header="连接时间" Width="70" DisplayMemberBinding="{Binding ConnectedAt, StringFormat=HH:mm:ss}"/>
+                        <GridViewColumn Header="最后响应" Width="70" DisplayMemberBinding="{Binding LastSeen, StringFormat=HH:mm:ss}"/>
+                        <GridViewColumn Header="图标数" Width="50" DisplayMemberBinding="{Binding IconCount}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </Grid>
 
-        <!-- Tray icons for selected client -->
+        <!-- Tray icons -->
         <Grid Grid.Row="2" Margin="0,8,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -113,27 +100,29 @@
                 <TextBlock x:Name="TrayIconTitle" Text="客户端托盘图标" FontWeight="SemiBold" DockPanel.Dock="Left"/>
                 <Button Content="请求刷新" Click="RequestTrayIcons_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
-            <DataGrid Grid.Row="1" x:Name="TrayIconGrid" IsReadOnly="True"
-                      ContextMenuOpening="TrayIconGrid_ContextMenuOpening">
-                <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="选" Width="35"
-                                            Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                        <DataGridCheckBoxColumn.ElementStyle>
-                            <Style TargetType="CheckBox">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridCheckBoxColumn.ElementStyle>
-                    </DataGridCheckBoxColumn>
-                    <DataGridTextColumn Header="进程名" Binding="{Binding ProcessName}" Width="*" MinWidth="100"/>
-                    <DataGridTextColumn Header="提示文本" Binding="{Binding Tooltip}" Width="2*" MinWidth="120"/>
-                    <DataGridTextColumn Header="区域" Binding="{Binding Area}" Width="65"/>
-                    <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="60"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <ListView Grid.Row="1" x:Name="TrayIconList" SelectionMode="Single">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="35">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="选"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="进程名" Width="150" DisplayMemberBinding="{Binding ProcessName}"/>
+                        <GridViewColumn Header="提示文本" Width="300" DisplayMemberBinding="{Binding Tooltip}"/>
+                        <GridViewColumn Header="区域" Width="65" DisplayMemberBinding="{Binding Area}"/>
+                        <GridViewColumn Header="状态" Width="60" DisplayMemberBinding="{Binding Status}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </Grid>
 
-        <!-- Log area -->
+        <!-- Log -->
         <TextBox Grid.Row="3" x:Name="LogBox" IsReadOnly="True" Height="80" Margin="0,8,0,0"
                  VerticalScrollBarVisibility="Auto" FontSize="11" FontFamily="Consolas"
                  Background="#1E1E1E" Foreground="#CCCCCC" Padding="6"/>
